@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FrostFix Refrigeration — Same-Day Onsite Service</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ice: #c8eeff;
+      --frost: #e8f7ff;
+      --cold: #0a9fd8;
+      --deep: #053d5a;
+      --steel: #1a2c3a;
+      --accent: #00e5ff;
+      --warm: #ff6b35;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--steel);
+      color: #e8f7ff;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .display {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.04em;
+    }
+
+    /* --- NOISE TEXTURE OVERLAY --- */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.5;
+    }
+
+    /* --- FROST PARTICLES --- */
+    .particles-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .flake {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      opacity: 0;
+      animation: drift linear infinite;
+    }
+
+    @keyframes drift {
+      0%   { transform: translateY(-20px) translateX(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(110vh) translateX(40px); opacity: 0; }
+    }
+
+    /* --- NAV --- */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(5, 61, 90, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,229,255,0.15);
+    }
+
+    /* --- HERO --- */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #053d5a 0%, #0a1f2e 50%, #021520 100%);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--steel));
+    }
+
+    .ice-circle {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(0,229,255,0.12);
+      animation: pulse-ring 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-ring {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50%       { transform: scale(1.05); opacity: 0.6; }
+    }
+
+    .hero-temp {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(120px, 20vw, 220px);
+      line-height: 0.85;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(0,229,255,0.2);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* --- SECTION HEADINGS --- */
+    .section-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* --- SERVICE CARDS --- */
+    .service-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(0,229,255,0.12);
+      border-radius: 12px;
+      padding: 28px 24px;
+      transition: all 0.3s ease;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 0;
+      background: var(--accent);
+      transition: height 0.3s ease;
+    }
+
+    .service-card:hover {
+      background: rgba(0,229,255,0.07);
+      border-color: rgba(0,229,255,0.35);
+      transform: translateY(-3px);
+    }
+
+    .service-card:hover::before { height: 100%; }
+
+    /* --- CTA BUTTONS --- */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #25D366;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      box-shadow: 0 4px 24px rgba(37,211,102,0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(37,211,102,0.5);
+      background: #20bd5a;
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: var(--accent);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 13px 28px;
+      border-radius: 50px;
+      border: 1.5px solid var(--accent);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+
+    .btn-outline:hover {
+      background: rgba(0,229,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    /* --- FLOATING WA BUTTON --- */
+    .wa-float {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 200;
+      width: 60px;
+      height: 60px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 28px rgba(37,211,102,0.5);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: none;
+    }
+
+    .wa-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 36px rgba(37,211,102,0.65);
+    }
+
+    .wa-float .ping {
+      position: absolute;
+      top: -3px; right: -3px;
+      width: 18px; height: 18px;
+      background: var(--warm);
+      border-radius: 50%;
+      border: 2px solid var(--steel);
+      animation: ping-dot 1.5s ease-in-out infinite;
+    }
+
+    @keyframes ping-dot {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.25); }
+    }
+
+    /* --- MODAL --- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 21, 32, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: linear-gradient(145deg, #0a2535, #061820);
+      border: 1px solid rgba(0,229,255,0.25);
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 460px;
+      width: 100%;
+      transform: translateY(20px) scale(0.97);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-box::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(0,229,255,0.12), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .modal-overlay.active .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .feature-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.2);
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--ice);
+      margin: 4px;
+    }
+
+    /* --- DIVIDER --- */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(0,229,255,0.2), transparent);
+      margin: 60px 0;
+    }
+
+    /* --- TRUST STRIP --- */
+    .trust-item {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .trust-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      line-height: 1;
+      color: var(--accent);
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      background: #021520;
+      border-top: 1px solid rgba(0,229,255,0.1);
+    }
+
+    /* animations on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Snowflake icon */
+    .snow-icon {
+      color: var(--accent);
+    }
+
+    @media (max-width: 640px) {
+      .hero-temp { font-size: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================
+       MODAL — Activate WhatsApp Account
+  ========================================================= -->
+  <div class="modal-overlay" id="waModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <button onclick="closeModal()" aria-label="Close"
+        style="position:absolute;top:16px;right:20px;background:none;border:none;color:rgba(200,238,255,0.5);font-size:24px;cursor:pointer;line-height:1;">×</button>
+
+      <!-- Icon -->
+      <div style="width:64px;height:64px;background:rgba(37,211,102,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;border:1px solid rgba(37,211,102,0.3);">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.878L0 24l6.286-1.508A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.031-1.388l-.36-.214-3.733.896.938-3.62-.236-.373A9.78 9.78 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+      </div>
+
+      <p class="section-label" style="margin-bottom:8px;">WhatsApp Business Connect</p>
+      <h2 id="modalTitle" style="font-size:32px;line-height:1.1;margin-bottom:12px;color:#e8f7ff;">
+        Activate Your Web Account
+      </h2>
+      <p style="color:rgba(200,238,255,0.65);font-size:15px;line-height:1.6;margin-bottom:24px;">
+        For a <strong style="color:var(--accent);">very small once-off fee</strong>, activate your WhatsApp Business web account and let your customers contact and connect with you <em>at any time</em> — day or night.
+      </p>
+
+      <div style="margin-bottom:24px;">
+        <div class="feature-pill">✓ 24/7 customer messaging</div>
+        <div class="feature-pill">✓ Instant service requests</div>
+        <div class="feature-pill">✓ No app download needed</div>
+        <div class="feature-pill">✓ Click-to-chat enabled</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <a href="https://wa.me/27742378894?text=Hi!%20I'd%20like%20to%20activate%20my%20WhatsApp%20Business%20web%20account." 
+           class="btn-primary" style="justify-content:center;" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.878L0 24l6.286-1.508A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.031-1.388l-.36-.214-3.733.896.938-3.62-.236-.373A9.78 9.78 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+          Activate Now on WhatsApp
+        </a>
+        <button onclick="closeModal()" class="btn-outline" style="justify-content:center;">
+          Maybe Later
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       FLOATING WHATSAPP BUTTON
+  ========================================================= -->
+  <button class="wa-float" onclick="openModal()" aria-label="Contact via WhatsApp">
+    <span class="ping"></span>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.878L0 24l6.286-1.508A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.031-1.388l-.36-.214-3.733.896.938-3.62-.236-.373A9.78 9.78 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+  </button>
+
+  <!-- =========================================================
+       NAVIGATION
+  ========================================================= -->
+  <nav>
+    <div style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <!-- Snowflake SVG logo mark -->
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/>
+          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07"/>
+          <circle cx="12" cy="12" r="2" fill="#00e5ff" stroke="none"/>
+        </svg>
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.06em;color:#e8f7ff;">FrostFix</span>
+        <span style="font-size:11px;font-weight:600;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;opacity:0.7;margin-left:2px;">Refrigeration</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:16px;">
+        <a href="#services" style="color:rgba(200,238,255,0.65);font-size:14px;text-decoration:none;font-weight:500;display:none;" class="md-show">Services</a>
+        <a href="#why-us" style="color:rgba(200,238,255,0.65);font-size:14px;text-decoration:none;font-weight:500;display:none;" class="md-show">Why Us</a>
+        <button onclick="openModal()" class="btn-primary" style="padding:10px 20px;font-size:13px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.878L0 24l6.286-1.508A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.031-1.388l-.36-.214-3.733.896.938-3.62-.236-.373A9.78 9.78 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+          Chat Now
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <style>
+    @media (min-width: 768px) { .md-show { display: inline !important; } }
+  </style>
+
+  <!-- =========================================================
+       HERO
+  ========================================================= -->
+  <section class="hero" id="home">
+    <!-- Frost particles -->
+    <div class="particles-bg" id="particles"></div>
+
+    <!-- Decorative circles -->
+    <div class="ice-circle" style="width:600px;height:600px;top:50%;left:60%;transform:translate(-50%,-50%);"></div>
+    <div class="ice-circle" style="width:900px;height:900px;top:50%;left:60%;transform:translate(-50%,-50%);animation-delay:1s;"></div>
+    <div class="ice-circle" style="width:1200px;height:1200px;top:50%;left:60%;transform:translate(-50%,-50%);animation-delay:2s;"></div>
+
+    <!-- Background temperature display -->
+    <div class="hero-temp" style="position:absolute;right:-20px;top:50%;transform:translateY(-50%);line-height:0.8;">−18°</div>
+
+    <!-- Content -->
+    <div style="position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:100px 24px 60px;">
+      <div style="max-width:640px;">
+        <p class="section-label" style="margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+          <span style="display:inline-block;width:32px;height:1px;background:var(--accent);"></span>
+          Same-Day · Onsite · Every Service
+        </p>
+
+        <h1 style="font-size:clamp(56px,9vw,100px);line-height:0.9;margin-bottom:24px;color:#e8f7ff;">
+          WE FIX<br/>
+          <span style="color:var(--accent);">EVERY</span><br/>
+          FRIDGE.
+        </h1>
+
+        <p style="font-size:18px;line-height:1.65;color:rgba(200,238,255,0.72);max-width:480px;margin-bottom:36px;font-weight:300;">
+          Every refrigeration service — same time, onsite. No waiting, no callbacks, no excuses. We come to you and fix it right the first time.
+        </p>
+
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;">
+          <button onclick="openModal()" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.878L0 24l6.286-1.508A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.031-1.388l-.36-.214-3.733.896.938-3.62-.236-.373A9.78 9.78 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+            Book via WhatsApp
+          </button>
+          <a href="#services" class="btn-outline">
+            Our Services
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <!-- Quick contact strip -->
+        <div style="margin-top:48px;display:flex;align-items:center;gap:12px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.25);display:flex;align-items:center;justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.1 1.2 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.27 7.74a16 16 0 006 6l1.1-1.1a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+          </div>
+          <div>
+            <p style="font-size:12px;color:rgba(200,238,255,0.45);letter-spacing:0.1em;text-transform:uppercase;font-weight:600;">Call or WhatsApp Us</p>
+            <p style="font-size:17px;font-weight:700;color:var(--ice);">742 378 894</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       TRUST STATS
+  ========================================================= -->
+  <section style="background:#0a1f2e;padding:48px 24px;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0;">
+        <div class="trust-item" style="border-right:1px solid rgba(0,229,255,0.1);">
+          <div class="trust-number">100%</div>
+          <p style="font-size:13px;color:rgba(200,238,255,0.55);margin-top:4px;font-weight:500;">Onsite Service</p>
+        </div>
+        <div class="trust-item" style="border-right:1px solid rgba(0,229,255,0.1);">
+          <div class="trust-number">1x</div>
+          <p style="font-size:13px;color:rgba(200,238,255,0.55);margin-top:4px;font-weight:500;">Visit Fixed</p>
+        </div>
+        <div class="trust-item" style="border-right:1px solid rgba(0,229,255,0.1);">
+          <div class="trust-number">24/7</div>
+          <p style="font-size:13px;color:rgba(200,238,255,0.55);margin-top:4px;font-weight:500;">WA Support</p>
+        </div>
+        <div class="trust-item">
+          <div class="trust-number">ALL</div>
+          <p style="font-size:13px;color:rgba(200,238,255,0.55);margin-top:4px;font-weight:500;">Brands Covered</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SERVICES
+  ========================================================= -->
+  <section id="services" style="padding:80px 24px;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div class="reveal" style="margin-bottom:52px;">
+        <p class="section-label" style="margin-bottom:10px;">What We Do</p>
+        <h2 style="font-size:clamp(42px,6vw,72px);line-height:0.95;max-width:600px;">
+          EVERY SERVICE.<br/><span style="color:var(--accent);">ONE VISIT.</span>
+        </h2>
+        <p style="margin-top:16px;color:rgba(200,238,255,0.6);font-size:16px;max-width:500px;line-height:1.7;font-weight:300;">
+          We carry full parts inventory and arrive prepared. Whatever the fault — compressor, gas, electrical, mechanical — we handle it the same day, onsite.
+        </p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
+
+        <div class="service-card reveal">
+          <div style="font-size:28px;margin-bottom:14px;">🔧</div>
+          <h3 style="font-size:22px;margin-bottom:8px;">Compressor Repair</h3>
+          <p style="font-size:14px;color:rgba(200,238,255,0.55);line-height:1.6;">Compressor failure, noise, or weak cooling — diagnosed and repaired onsite, same visit.</p>
+        </div>
+
+        <div class="service-card reveal" style="transition-delay:0.08s;">
+          <div style="font-size:28px;margin-bottom:14px;">❄️</div>
+          <h3 style="font-size:22px;margin-bottom:8px;">Gas Recharge & Leaks</h3>
+          <p style="font-size:14px;color:rgba(200,238,255,0.55);line-height:1.6;">Full refrigerant leak detection, repair and recharge. All gas types handled.</p>
+        </div>
+
+        <div class="service-card reveal" style="transition-delay:0.16s;">
+          <div style="font-size:28px;margin-bottom:14px;">⚡</div>
+          <h3 style="font-size:22px;margin-bottom:8px;">Electrical & PCB</h3>
+          <p style="font-size:14px;color:rgba(200,238,255,0.55);line-height:1.6;">Control boards, thermostats, start relays and wiring faults fixed on the spot.</p>
+        </div>
+
+        <div class="service-card reveal" style="transition-delay:0.24s;">
+          <div style="font-size:28px;margin-bottom:14px;">🧊</div>
+          <h3 style="font-size:22px;margin-bottom:8px;">Defrost System</h3>
+          <p style="font-size:14px;color:rgba(200,238,255,0.55);line-height:1.6;">Ice buildup, defrost timers, heaters and sensors — fully restored.</p>
+        </div>
+
+        <div class="service-card reveal" style="transition-delay:0.32s;">
+          <div style="font-size:28px;margin-bottom:14px;">🌡️</div>
+          <h3 style="font-size:22px;margin-bottom:8px;">Thermostat & Controls</h3>
+          <p style="font-size:14px;color:rgba(200,238,255,0.55);line-height:1.6;">Temperature inconsistencies and control failures diagnosed and resolved.</p>
+        </div>
+
+        <div class="service-card reveal" style="transition-delay:0.40s;">
+          <div style="font-size:28px;margin-bottom:14px;">🚗</div>
+          <h3 style="font-size:22px;margin-bottom:8px;">Commercial & Domestic</h3>
+          <p style="font-size:14px;color:rgba(200,238,255,0.55);line-height:1.6;">Fridges, freezers, display cases, chest freezers, wine coolers. All units welcome.</p>
+        </div>
+
+      </div>
+
+      <!-- CTA after services -->
+      <div class="reveal" style="margin-top:48px;text-align:center;">
+        <p style="color:rgba(200,238,255,0.5);font-size:15px;margin-bottom:16px;">Don't see your specific issue? Call us — we handle it all.</p>
+        <button onclick="openModal()" class="btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.878L0 24l6.286-1.508A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.031-1.388l-.36-.214-3.733.896.938-3.62-.236-.373A9.78 9.78 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+          WhatsApp Us Your Problem
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- =========================================================
+       WHY CHOOSE US
+  ========================================================= -->
+  <section id="why-us" style="padding:40px 24px 80px;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+        
+        <div class="reveal">
+          <p class="section-label" style="margin-bottom:10px;">Why FrostFix</p>
+          <h2 style="font-size:clamp(40px,5vw,64px);line-height:0.95;margin-bottom:24px;">
+            NO MORE<br/><span style="color:var(--accent);">WAITING</span><br/>AROUND.
+          </h2>
+          <p style="color:rgba(200,238,255,0.65);font-size:16px;line-height:1.75;font-weight:300;margin-bottom:28px;">
+            Most refrigeration companies make multiple trips or order parts for a follow-up visit. We arrive with what we need and leave with the job done. Every service, same visit, onsite.
+          </p>
+          <button onclick="openModal()" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.878L0 24l6.286-1.508A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.031-1.388l-.36-.214-3.733.896.938-3.62-.236-.373A9.78 9.78 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+            Book Your Repair
+          </button>
+        </div>
+
+        <!-- Feature list -->
+        <div class="reveal" style="transition-delay:0.15s;">
+          <div style="display:flex;flex-direction:column;gap:16px;">
+
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:20px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(0,229,255,0.1);">
+              <div style="min-width:42px;height:42px;background:rgba(0,229,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:18px;">🎯</div>
+              <div>
+                <h3 style="font-size:17px;margin-bottom:4px;">Same-Day Completion</h3>
+                <p style="font-size:14px;color:rgba(200,238,255,0.5);line-height:1.55;">We don't leave until the job is done. No second visits, no waiting on parts to be ordered.</p>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:20px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(0,229,255,0.1);">
+              <div style="min-width:42px;height:42px;background:rgba(0,229,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:18px;">📱</div>
+              <div>
+                <h3 style="font-size:17px;margin-bottom:4px;">WhatsApp First</h3>
+                <p style="font-size:14px;color:rgba(200,238,255,0.5);line-height:1.55;">Message us at any time. Get a fast response, get quoted, and get booked — all without a phone call.</p>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:20px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(0,229,255,0.1);">
+              <div style="min-width:42px;height:42px;background:rgba(0,229,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:18px;">🔩</div>
+              <div>
+                <h3 style="font-size:17px;margin-bottom:4px;">All Brands, All Types</h3>
+                <p style="font-size:14px;color:rgba(200,238,255,0.5);line-height:1.55;">Samsung, LG, Defy, Hisense, Kelvinator, Whirlpool, commercial units and more. No referrals.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       CTA BANNER
+  ========================================================= -->
+  <section style="background:linear-gradient(135deg,#053d5a,#0a2535);border-top:1px solid rgba(0,229,255,0.1);border-bottom:1px solid rgba(0,229,255,0.1);padding:64px 24px;">
+    <div style="max-width:800px;margin:0 auto;text-align:center;" class="reveal">
+      <p class="section-label" style="margin-bottom:12px;">Ready to Get Fixed?</p>
+      <h2 style="font-size:clamp(44px,7vw,80px);line-height:0.92;margin-bottom:20px;">
+        CALL OR CHAT.<br/><span style="color:var(--accent);">WE'RE READY.</span>
+      </h2>
+      <p style="color:rgba(200,238,255,0.6);font-size:17px;max-width:480px;margin:0 auto 32px;font-weight:300;line-height:1.7;">
+        Don't let a broken fridge cost you food and frustration. One message is all it takes.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:center;">
+        <button onclick="openModal()" class="btn-primary" style="font-size:16px;padding:16px 34px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.878L0 24l6.286-1.508A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.031-1.388l-.36-.214-3.733.896.938-3.62-.236-.373A9.78 9.78 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+          WhatsApp 742 378 894
+        </button>
+        <div style="display:flex;align-items:center;gap:8px;color:rgba(200,238,255,0.45);font-size:14px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Typically responds within minutes
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       FOOTER
+  ========================================================= -->
+  <footer style="padding:40px 24px;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:center;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/>
+          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07"/>
+          <circle cx="12" cy="12" r="2" fill="#00e5ff" stroke="none"/>
+        </svg>
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.06em;">FrostFix Refrigeration</span>
+      </div>
+
+      <p style="color:rgba(200,238,255,0.35);font-size:13px;">
+        Every service. Same day. Onsite. — <strong style="color:rgba(200,238,255,0.6);">742 378 894</strong>
+      </p>
+
+      <button onclick="openModal()" class="btn-primary" style="padding:10px 22px;font-size:13px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.878L0 24l6.286-1.508A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.031-1.388l-.36-.214-3.733.896.938-3.62-.236-.373A9.78 9.78 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+        Message Us
+      </button>
+    </div>
+
+    <div style="max-width:1200px;margin:24px auto 0;padding-top:20px;border-top:1px solid rgba(0,229,255,0.06);text-align:center;">
+      <p style="font-size:12px;color:rgba(200,238,255,0.2);">© 2025 FrostFix Refrigeration. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       JAVASCRIPT
+  ========================================================= -->
+  <script>
+    // ---- Modal ----
+    function openModal() {
+      document.getElementById('waModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('waModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close on overlay click
+    document.getElementById('waModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // ---- Frost Particles ----
+    (function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 28; i++) {
+        const flake = document.createElement('span');
+        flake.className = 'flake';
+        const size = Math.random() * 5 + 2;
+        flake.style.cssText = `
+          left: ${Math.random() * 100}%;
+          width: ${size}px;
+          height: ${size}px;
+          animation-duration: ${Math.random() * 12 + 8}s;
+          animation-delay: ${Math.random() * 10}s;
+          border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+          opacity: 0;
+        `;
+        container.appendChild(flake);
+      }
+    })();
+
+    // ---- Scroll Reveal ----
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ---- Staggered reveal on service cards ----
+    document.querySelectorAll('.service-card').forEach((card, i) => {
+      card.style.transitionDelay = `${i * 0.07}s`;
+    });
+
+    // ---- Smooth nav link highlight ----
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      navLinks.forEach(link => {
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          const top = target.offsetTop - 80;
+          const bottom = top + target.offsetHeight;
+          if (scrollY >= top && scrollY < bottom) {
+            link.style.color = 'var(--accent)';
+          } else {
+            link.style.color = 'rgba(200,238,255,0.65)';
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
