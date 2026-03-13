@@ -1310,12 +1310,15 @@
       <input type="hidden" name="cmd" value="_paynow">
       <input type="hidden" name="receiver" pattern="[0-9]" value="32479493">
       <input type="hidden" name="amount" id="payfastAmount" value="250">
+      <input type="hidden" name="return_url" value="https://webconnectsa.1biz.online/payfast/thankyou.html">
+      <input type="hidden" name="cancel_url" value="https://webconnectsa.1biz.online/payfast/cancel.html">
       <input type="hidden" name="item_name" maxlength="255" id="itemName" value="Starter Plan">
       <input type="hidden" name="item_description" maxlength="255" id="itemDescription" value="Starter plan monthly payment">
       <div class="payfast-submit">
         <input type="image" src="https://my.payfast.io/images/buttons/PayNow/Dark-Large-PayNow.png" alt="Pay Now with Payfast">
       </div>
     </form>
+   
 
     <div class="trial-section">
       <button class="modal-trial-btn" id="freeTrialBtn">Start free trial (no payment)</button>
