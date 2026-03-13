@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WashFix Pro – Washing Machine Repair Experts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #0a1628;
+      --blue: #1a3a6b;
+      --sky: #2e7fff;
+      --aqua: #00c6e0;
+      --white: #f4f8ff;
+      --steel: #c8d8f0;
+      --warn: #ff6b35;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .display {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 40%, rgba(46,127,255,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 10% 80%, rgba(0,198,224,0.12) 0%, transparent 60%),
+        linear-gradient(160deg, #0a1628 0%, #0d2247 60%, #0a1628 100%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 2rem 4rem;
+    }
+
+    /* animated washing drum */
+    .drum-wrap {
+      position: absolute;
+      right: -60px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 460px;
+      height: 460px;
+      opacity: 0.12;
+    }
+    @media (min-width:1024px){ .drum-wrap { right: 60px; opacity: 0.22; } }
+
+    .drum-circle {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      border: 40px solid var(--steel);
+      position: relative;
+      animation: spin 8s linear infinite;
+    }
+    .drum-circle::before {
+      content: '';
+      position: absolute;
+      inset: 20px;
+      border-radius: 50%;
+      border: 6px dashed rgba(200,216,240,0.4);
+    }
+    .drum-dot {
+      position: absolute;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--aqua);
+      box-shadow: 0 0 20px var(--aqua);
+    }
+    .drum-dot:nth-child(2) { top: 15%; left: 50%; transform: translateX(-50%); }
+    .drum-dot:nth-child(3) { top: 50%; right: 10%; transform: translateY(-50%); }
+    .drum-dot:nth-child(4) { bottom: 15%; left: 50%; transform: translateX(-50%); }
+    .drum-dot:nth-child(5) { top: 50%; left: 10%; transform: translateY(-50%); }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,198,224,0.12);
+      border: 1px solid rgba(0,198,224,0.35);
+      border-radius: 99px;
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--aqua);
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+    .badge-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--aqua);
+      box-shadow: 0 0 8px var(--aqua);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100%{ transform:scale(1); opacity:1; }
+      50%{ transform:scale(1.4); opacity:0.6; }
+    }
+
+    .hero-title {
+      font-size: clamp(3.5rem, 9vw, 7rem);
+      line-height: 0.95;
+      color: var(--white);
+    }
+    .hero-title span { color: var(--aqua); }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--steel);
+      line-height: 1.65;
+      max-width: 540px;
+      margin: 1.4rem 0 2.4rem;
+      font-weight: 300;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--sky) 0%, var(--aqua) 100%);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 30px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 32px rgba(46,127,255,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 40px rgba(0,198,224,0.45);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: var(--white);
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 13px 28px;
+      border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: rgba(255,255,255,0.04);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 1.5rem 2rem;
+    }
+
+    /* ── PROBLEMS SECTION ── */
+    .section { padding: 5rem 2rem; position: relative; z-index: 1; }
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--aqua);
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      color: var(--steel);
+      font-weight: 300;
+      font-size: 1.05rem;
+      max-width: 520px;
+    }
+
+    /* problem cards */
+    .problem-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 1.8rem;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      cursor: default;
+    }
+    .problem-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,198,224,0.4);
+      box-shadow: 0 12px 40px rgba(0,198,224,0.1);
+    }
+    .problem-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(46,127,255,0.25), rgba(0,198,224,0.15));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ── WHY US ── */
+    .why-section {
+      background: linear-gradient(160deg, rgba(46,127,255,0.07) 0%, transparent 60%);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .why-card {
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+    .why-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      color: var(--aqua);
+      line-height: 1;
+    }
+
+    /* ── PROCESS ── */
+    .step-line {
+      position: absolute;
+      top: 24px; left: calc(50% + 24px);
+      width: calc(100% - 48px);
+      height: 2px;
+      background: linear-gradient(90deg, rgba(0,198,224,0.4), rgba(0,198,224,0.05));
+    }
+    .step-circle {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--sky), var(--aqua));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      color: var(--navy);
+      margin: 0 auto 1rem;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 0 6px rgba(0,198,224,0.12);
+    }
+
+    /* ── CTA STRIP ── */
+    .cta-strip {
+      background: linear-gradient(135deg, var(--blue) 0%, #0d2a5a 100%);
+      border: 1px solid rgba(46,127,255,0.25);
+      border-radius: 20px;
+      padding: 3.5rem 2.5rem;
+      margin: 0 1rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-strip::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,198,224,0.18) 0%, transparent 70%);
+    }
+
+    /* ── PHONE PILL ── */
+    .phone-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0,198,224,0.1);
+      border: 1.5px solid rgba(0,198,224,0.3);
+      border-radius: 99px;
+      padding: 10px 22px 10px 14px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.06em;
+      color: var(--white);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .phone-pill:hover { background: rgba(0,198,224,0.2); }
+    .phone-icon-wrap {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--aqua);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 2rem;
+      text-align: center;
+      color: rgba(200,216,240,0.4);
+      font-size: 0.82rem;
+    }
+
+    /* ── FLOATING WA BUTTON ── */
+    .wa-float {
+      position: fixed;
+      bottom: 28px;
+      right: 24px;
+      z-index: 900;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: #25d366;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 28px rgba(37,211,102,0.55);
+      cursor: pointer;
+      animation: floatBob 3s ease-in-out infinite;
+      transition: transform 0.2s;
+    }
+    .wa-float:hover { transform: scale(1.1); }
+    @keyframes floatBob {
+      0%,100%{ transform:translateY(0); }
+      50%{ transform:translateY(-6px); }
+    }
+    .wa-float svg { width: 30px; height: 30px; fill: white; }
+
+    /* ── MODAL ── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(5,10,25,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-box {
+      background: linear-gradient(155deg, #0e1f42 0%, #0a1628 100%);
+      border: 1px solid rgba(0,198,224,0.25);
+      border-radius: 20px;
+      max-width: 440px;
+      width: 100%;
+      padding: 2.5rem 2rem;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    }
+    .modal-backdrop.active .modal-box {
+      transform: translateY(0) scale(1);
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 18px;
+      background: rgba(255,255,255,0.07);
+      border: none;
+      color: var(--steel);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.15); }
+
+    .modal-icon-ring {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(37,211,102,0.2), rgba(0,198,224,0.15));
+      border: 2px solid rgba(37,211,102,0.35);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.4rem;
+    }
+    .modal-icon-ring svg { width: 36px; height: 36px; fill: #25d366; }
+
+    .fee-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(0,198,224,0.15), rgba(46,127,255,0.1));
+      border: 1px solid rgba(0,198,224,0.3);
+      border-radius: 99px;
+      padding: 4px 14px;
+      font-size: 0.78rem;
+      color: var(--aqua);
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .feature-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.9rem;
+      color: var(--steel);
+    }
+    .feature-row:last-child { border-bottom: none; }
+    .check { color: #25d366; font-size: 1rem; }
+
+    .btn-wa {
+      width: 100%;
+      background: #25d366;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 6px 24px rgba(37,211,102,0.3);
+      margin-top: 1.5rem;
+    }
+    .btn-wa:hover { background: #20bb5a; transform: translateY(-1px); }
+    .btn-wa svg { width: 22px; height: 22px; fill: white; }
+
+    /* ── FADE IN ANIMATION ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .max-w { max-width: 1200px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section class="hero">
+  <div class="max-w relative z-10">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Available 7 Days a Week
+    </div>
+    <h1 class="hero-title">
+      BROKEN<br>
+      WASHING<br>
+      <span>MACHINE?</span>
+    </h1>
+    <p class="hero-sub">
+      Leaks, drainage issues, spinning problems, and more — our certified technicians fix it fast, at a price that won't break the bank.
+    </p>
+    <div class="flex flex-wrap gap-4">
+      <button onclick="openModal()" class="btn-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.144 1.54 5.877L0 24l6.324-1.514A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.028-1.381l-.36-.214-3.733.894.944-3.626-.235-.373A9.769 9.769 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/></svg>
+        Chat on WhatsApp
+      </button>
+      <a href="tel:0752561526" class="btn-outline">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        075 256 1526
+      </a>
+    </div>
+  </div>
+
+  <!-- Decorative drum -->
+  <div class="drum-wrap">
+    <div class="drum-circle">
+      <div class="drum-dot"></div>
+      <div class="drum-dot"></div>
+      <div class="drum-dot"></div>
+      <div class="drum-dot"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ STATS BAR ══════════════════ -->
+<div class="stats-bar relative z-10">
+  <div class="max-w">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div>
+        <div class="why-num">500<span style="color:var(--sky)">+</span></div>
+        <div style="color:var(--steel);font-size:0.82rem;letter-spacing:0.08em;">REPAIRS DONE</div>
+      </div>
+      <div>
+        <div class="why-num">Same<span style="font-size:2rem;color:var(--sky)"> Day</span></div>
+        <div style="color:var(--steel);font-size:0.82rem;letter-spacing:0.08em;">SERVICE AVAILABLE</div>
+      </div>
+      <div>
+        <div class="why-num">All<span style="font-size:2rem;color:var(--sky)"> Brands</span></div>
+        <div style="color:var(--steel);font-size:0.82rem;letter-spacing:0.08em;">COVERED</div>
+      </div>
+      <div>
+        <div class="why-num">90<span style="color:var(--sky)">Day</span></div>
+        <div style="color:var(--steel);font-size:0.82rem;letter-spacing:0.08em;">REPAIR WARRANTY</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PROBLEMS ══════════════════ -->
+<section class="section">
+  <div class="max-w">
+    <div class="grid md:grid-cols-2 gap-12 items-start">
+      <div class="fade-up">
+        <p class="section-label">What We Fix</p>
+        <h2 class="section-title">CALL THE<br><span style="color:var(--aqua)">EXPERTS</span></h2>
+        <p class="section-sub">We diagnose and repair every type of washing machine fault — quickly and affordably.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 fade-up" style="transition-delay:0.1s">
+        <div class="problem-card">
+          <div class="problem-icon">💧</div>
+          <h3 style="font-size:1.1rem;font-family:'DM Sans';font-weight:700;margin-bottom:0.4rem;">Leaks & Water Issues</h3>
+          <p style="font-size:0.87rem;color:var(--steel);font-weight:300;">Door seals, drum leaks, hose connections and more.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🚿</div>
+          <h3 style="font-size:1.1rem;font-family:'DM Sans';font-weight:700;margin-bottom:0.4rem;">Drainage Problems</h3>
+          <p style="font-size:0.87rem;color:var(--steel);font-weight:300;">Won't drain? Blocked filters, faulty pumps diagnosed fast.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🔄</div>
+          <h3 style="font-size:1.1rem;font-family:'DM Sans';font-weight:700;margin-bottom:0.4rem;">Spinning Failures</h3>
+          <p style="font-size:0.87rem;color:var(--steel);font-weight:300;">Drum not spinning or banging loudly? We sort it.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">⚡</div>
+          <h3 style="font-size:1.1rem;font-family:'DM Sans';font-weight:700;margin-bottom:0.4rem;">Electrical Faults</h3>
+          <p style="font-size:0.87rem;color:var(--steel);font-weight:300;">Won't power on, error codes, control board issues.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🔥</div>
+          <h3 style="font-size:1.1rem;font-family:'DM Sans';font-weight:700;margin-bottom:0.4rem;">Heating Elements</h3>
+          <p style="font-size:0.87rem;color:var(--steel);font-weight:300;">Cold washes despite hot setting? Element replaced.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">📳</div>
+          <h3 style="font-size:1.1rem;font-family:'DM Sans';font-weight:700;margin-bottom:0.4rem;">Vibration & Noise</h3>
+          <p style="font-size:0.87rem;color:var(--steel);font-weight:300;">Bearings, springs, and counterweight repairs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ WHY US ══════════════════ -->
+<section class="section why-section">
+  <div class="max-w">
+    <div class="text-center mb-12 fade-up">
+      <p class="section-label">Why Choose Us</p>
+      <h2 class="section-title">FAST. RELIABLE.<br><span style="color:var(--aqua)">AFFORDABLE.</span></h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div class="why-card fade-up" style="transition-delay:0.05s">
+        <div style="font-size:2.5rem;margin-bottom:0.8rem;">🛠️</div>
+        <h3 style="font-family:'Bebas Neue';font-size:1.6rem;color:var(--white);margin-bottom:0.5rem;">Certified Technicians</h3>
+        <p style="color:var(--steel);font-size:0.9rem;font-weight:300;">Trained professionals who know washing machines inside out — every brand, every model.</p>
+      </div>
+      <div class="why-card fade-up" style="transition-delay:0.12s">
+        <div style="font-size:2.5rem;margin-bottom:0.8rem;">⚡</div>
+        <h3 style="font-family:'Bebas Neue';font-size:1.6rem;color:var(--white);margin-bottom:0.5rem;">Same-Day Service</h3>
+        <p style="color:var(--steel);font-size:0.9rem;font-weight:300;">Book in the morning, get repaired the same day. We respect your time.</p>
+      </div>
+      <div class="why-card fade-up" style="transition-delay:0.2s">
+        <div style="font-size:2.5rem;margin-bottom:0.8rem;">💰</div>
+        <h3 style="font-family:'Bebas Neue';font-size:1.6rem;color:var(--white);margin-bottom:0.5rem;">No Hidden Fees</h3>
+        <p style="color:var(--steel);font-size:0.9rem;font-weight:300;">Upfront pricing with a free quote before we start. What we quote is what you pay.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ HOW IT WORKS ══════════════════ -->
+<section class="section">
+  <div class="max-w">
+    <div class="text-center mb-12 fade-up">
+      <p class="section-label">The Process</p>
+      <h2 class="section-title">3 STEPS TO A<br><span style="color:var(--aqua)">FIXED MACHINE</span></h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 relative">
+      <div class="text-center fade-up" style="transition-delay:0.05s">
+        <div class="step-circle">1</div>
+        <h3 style="font-family:'Bebas Neue';font-size:1.5rem;margin-bottom:0.5rem;">Contact Us</h3>
+        <p style="color:var(--steel);font-size:0.9rem;font-weight:300;">Call or WhatsApp us. Describe the problem — we'll give a free quote on the spot.</p>
+      </div>
+      <div class="text-center fade-up" style="transition-delay:0.12s">
+        <div class="step-circle">2</div>
+        <h3 style="font-family:'Bebas Neue';font-size:1.5rem;margin-bottom:0.5rem;">We Come to You</h3>
+        <p style="color:var(--steel);font-size:0.9rem;font-weight:300;">Our technician arrives at your home, fully equipped to diagnose and repair.</p>
+      </div>
+      <div class="text-center fade-up" style="transition-delay:0.2s">
+        <div class="step-circle">3</div>
+        <h3 style="font-family:'Bebas Neue';font-size:1.5rem;margin-bottom:0.5rem;">Machine Fixed ✓</h3>
+        <p style="color:var(--steel);font-size:0.9rem;font-weight:300;">Repair done, machine tested, 90-day warranty issued. You only pay when satisfied.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CTA STRIP ══════════════════ -->
+<div class="max-w px-4">
+  <div class="cta-strip fade-up">
+    <div class="grid md:grid-cols-2 gap-6 items-center relative z-10">
+      <div>
+        <p class="section-label" style="margin-bottom:0.5rem;">Ready to Book?</p>
+        <h2 style="font-family:'Bebas Neue';font-size:clamp(2rem,5vw,3.2rem);line-height:1;margin-bottom:0.8rem;">
+          GET YOUR MACHINE<br>
+          <span style="color:var(--aqua)">RUNNING TODAY</span>
+        </h2>
+        <p style="color:var(--steel);font-size:0.95rem;font-weight:300;">Our team is standing by. Fast response, honest pricing, guaranteed results.</p>
+      </div>
+      <div class="flex flex-col gap-4 md:items-end">
+        <button onclick="openModal()" class="btn-primary" style="font-size:1.05rem;padding:16px 32px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.144 1.54 5.877L0 24l6.324-1.514A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.028-1.381l-.36-.214-3.733.894.944-3.626-.235-.373A9.769 9.769 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/></svg>
+          WhatsApp Us Now
+        </button>
+        <div class="phone-pill" onclick="window.location.href='tel:0752561526'">
+          <div class="phone-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--navy)"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          </div>
+          075 256 1526
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer>
+  <div class="max-w">
+    <p style="color:var(--steel);font-size:0.9rem;margin-bottom:0.4rem;font-weight:500;">WashFix Pro – Washing Machine Repair Experts</p>
+    <p>📞 075 256 1526 &nbsp;|&nbsp; Available 7 Days a Week</p>
+    <p style="margin-top:0.8rem;">© 2025 WashFix Pro. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ══════════════════ FLOATING WA BTN ══════════════════ -->
+<button class="wa-float" onclick="openModal()" title="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.144 1.54 5.877L0 24l6.324-1.514A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.028-1.381l-.36-.214-3.733.894.944-3.626-.235-.373A9.769 9.769 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/>
+  </svg>
+</button>
+
+<!-- ══════════════════ MODAL ══════════════════ -->
+<div class="modal-backdrop" id="waModal" onclick="handleBackdropClick(event)">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <div class="modal-icon-ring">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.144 1.54 5.877L0 24l6.324-1.514A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.028-1.381l-.36-.214-3.733.894.944-3.626-.235-.373A9.769 9.769 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/>
+      </svg>
+    </div>
+
+    <div class="text-center mb-4">
+      <div class="fee-badge">⚡ One-time Activation Fee</div>
+      <h2 style="font-family:'Bebas Neue';font-size:1.9rem;margin-bottom:0.5rem;line-height:1.1;">ACTIVATE YOUR<br>WEB ACCOUNT</h2>
+      <p style="color:var(--steel);font-size:0.9rem;font-weight:300;line-height:1.6;">
+        Unlock direct WhatsApp Business access for a very small once-off fee. Your customers can reach and connect with you <strong style="color:var(--white);">at any time</strong> — no missed calls, no delays.
+      </p>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.5rem;">
+      <div class="feature-row"><span class="check">✓</span> Instant WhatsApp Business chat link</div>
+      <div class="feature-row"><span class="check">✓</span> 24/7 customer contact — anytime, anywhere</div>
+      <div class="feature-row"><span class="check">✓</span> Pre-filled message for faster bookings</div>
+      <div class="feature-row"><span class="check">✓</span> Professional business profile & verified number</div>
+      <div class="feature-row"><span class="check">✓</span> One-time fee — no monthly charges</div>
+    </div>
+
+    <button class="btn-wa" onclick="activateWhatsApp()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.144 1.54 5.877L0 24l6.324-1.514A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.028-1.381l-.36-.214-3.733.894.944-3.626-.235-.373A9.769 9.769 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/>
+      </svg>
+      Activate & Connect on WhatsApp
+    </button>
+
+    <p style="text-align:center;color:rgba(200,216,240,0.45);font-size:0.75rem;margin-top:0.9rem;">
+      Or call directly: <a href="tel:0752561526" style="color:var(--aqua);text-decoration:none;">075 256 1526</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  // ── Modal ──
+  const modal = document.getElementById('waModal');
+
+  function openModal() {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function handleBackdropClick(e) {
+    if (e.target === modal) closeModal();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  function activateWhatsApp() {
+    const phone = '27752561526'; // SA format without leading 0
+    const message = encodeURIComponent("Hi! I found you online and I need help with my washing machine. Can you assist?");
+    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+    closeModal();
+  }
+
+  // ── Intersection observer for fade-up ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
