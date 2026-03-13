@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shayne's AC Services | Regassing & Installation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bebas Neue', 'sans-serif'],
+            condensed: ['Barlow Condensed', 'sans-serif'],
+            body: ['Barlow', 'sans-serif'],
+          },
+          colors: {
+            ice: '#C8F0FF',
+            frost: '#0099CC',
+            arctic: '#005580',
+            deep: '#002233',
+            snow: '#F0FAFF',
+            mist: '#E0F4FF',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Barlow', sans-serif; background: #002233; color: white; overflow-x: hidden; }
+
+    /* Background atmosphere */
+    .hero-bg {
+      background: linear-gradient(135deg, #002233 0%, #004466 40%, #0077AA 70%, #005580 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 20%, rgba(0,180,255,0.15) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 80%, rgba(0,100,200,0.12) 0%, transparent 50%);
+    }
+
+    /* Frost particle effects */
+    .snowflake {
+      position: absolute;
+      width: 6px; height: 6px;
+      background: rgba(200,240,255,0.6);
+      border-radius: 50%;
+      animation: fall linear infinite;
+      pointer-events: none;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Cold air waves */
+    .wave-line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(0,180,255,0.3), transparent);
+      animation: wave 4s ease-in-out infinite;
+    }
+    @keyframes wave {
+      0%, 100% { transform: translateX(-100%); opacity: 0; }
+      50% { transform: translateX(100%); opacity: 1; }
+    }
+
+    /* CTA Button */
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 24px rgba(37,211,102,0.4);
+      cursor: pointer;
+    }
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(37,211,102,0.6);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0099CC, #005580);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,153,204,0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0,153,204,0.6);
+    }
+
+    /* Cards */
+    .service-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(0,180,255,0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    .service-card:hover {
+      background: rgba(0,153,204,0.15);
+      border-color: rgba(0,180,255,0.5);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,153,204,0.2);
+    }
+
+    /* Glow text */
+    .glow-text {
+      text-shadow: 0 0 30px rgba(0,180,255,0.6), 0 0 60px rgba(0,153,204,0.3);
+    }
+
+    /* Temperature badge */
+    .temp-badge {
+      background: linear-gradient(135deg, rgba(0,153,204,0.3), rgba(0,85,128,0.4));
+      border: 1px solid rgba(200,240,255,0.3);
+      backdrop-filter: blur(8px);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,10,20,0.85);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1; pointer-events: all;
+    }
+    .modal-box {
+      background: linear-gradient(135deg, #003355, #004466);
+      border: 1px solid rgba(0,180,255,0.4);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 0 60px rgba(0,153,204,0.3);
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.active .modal-box {
+      transform: scale(1);
+    }
+
+    /* Floating WhatsApp bubble */
+    .wa-float {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      z-index: 999;
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 24px rgba(37,211,102,0.5);
+      cursor: pointer;
+      animation: pulse-wa 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse-wa {
+      0%, 100% { box-shadow: 0 4px 24px rgba(37,211,102,0.5); }
+      50% { box-shadow: 0 4px 40px rgba(37,211,102,0.8), 0 0 0 10px rgba(37,211,102,0.1); }
+    }
+    .wa-float svg { width: 32px; height: 32px; fill: white; }
+
+    /* Section divider */
+    .ice-divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(0,180,255,0.5), rgba(200,240,255,0.8), rgba(0,180,255,0.5), transparent);
+    }
+
+    /* Stats */
+    .stat-card {
+      border-left: 3px solid #0099CC;
+      padding-left: 16px;
+    }
+
+    /* Freeze animation on icons */
+    .freeze-icon { transition: all 0.3s ease; }
+    .freeze-icon:hover { filter: drop-shadow(0 0 12px #0099CC); transform: scale(1.1); }
+
+    /* Nav */
+    nav {
+      background: rgba(0,20,40,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,180,255,0.2);
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up { animation: fadeInUp 0.8s ease forwards; }
+    .delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .delay-2 { animation-delay: 0.25s; opacity: 0; }
+    .delay-3 { animation-delay: 0.4s; opacity: 0; }
+    .delay-4 { animation-delay: 0.55s; opacity: 0; }
+
+    /* Frost badge on top */
+    .brand-badge {
+      background: linear-gradient(135deg, #0099CC22, #00557744);
+      border: 1px solid rgba(0,180,255,0.3);
+      display: inline-block;
+      border-radius: 99px;
+      padding: 6px 18px;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #C8F0FF;
+    }
+  </style>
+</head>
+<body class="font-body">
+
+<!-- NAV -->
+<nav>
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-gradient-to-br from-frost to-arctic flex items-center justify-center text-white font-display text-lg">❄</div>
+      <div>
+        <div class="font-condensed font-700 text-white text-lg leading-tight">SHAYNE'S AC SERVICES</div>
+        <div class="text-xs text-ice/60 tracking-widest uppercase">Regassing & Installation</div>
+      </div>
+    </div>
+    <button onclick="openModal()" class="btn-whatsapp text-white font-condensed font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
+      <svg viewBox="0 0 24 24" class="w-4 h-4 fill-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.528 5.855L.057 23.804a.5.5 0 0 0 .635.634l6.012-1.47A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.666-.502-5.198-1.382l-.372-.217-3.856.943.963-3.773-.233-.378A9.946 9.946 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      WhatsApp Us
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-bg min-h-screen flex flex-col justify-center relative" id="home">
+  <!-- Snowflakes generated by JS -->
+  <div id="snowContainer" class="pointer-events-none"></div>
+  <!-- Wave lines -->
+  <div class="wave-line" style="top:30%; animation-delay:0s;"></div>
+  <div class="wave-line" style="top:60%; animation-delay:2s;"></div>
+
+  <div class="max-w-6xl mx-auto px-4 py-24 relative z-10 text-center">
+    <div class="brand-badge fade-in-up delay-1 mb-8">South Africa's Cool Specialists</div>
+
+    <h1 class="font-display text-7xl md:text-9xl glow-text text-white leading-none mb-4 fade-in-up delay-2">
+      STAY<br><span style="color:#C8F0FF;">ICE COLD</span>
+    </h1>
+
+    <p class="font-condensed text-xl md:text-2xl text-ice/80 max-w-2xl mx-auto mb-10 fade-in-up delay-3 font-medium tracking-wide">
+      Professional Air Conditioner Regassing & Installation<br>
+      <span class="text-frost">Fast, Affordable & Fully Certified</span>
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center fade-in-up delay-4">
+      <button onclick="openModal()" class="btn-whatsapp text-white font-condensed font-bold px-8 py-4 rounded-full text-lg flex items-center gap-3">
+        <svg viewBox="0 0 24 24" class="w-6 h-6 fill-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.528 5.855L.057 23.804a.5.5 0 0 0 .635.634l6.012-1.47A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.666-.502-5.198-1.382l-.372-.217-3.856.943.963-3.773-.233-.378A9.946 9.946 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Chat With Shayne Now
+      </button>
+      <a href="tel:0714870473" class="btn-primary text-white font-condensed font-bold px-8 py-4 rounded-full text-lg flex items-center gap-3">
+        📞 071 487 0473
+      </a>
+    </div>
+
+    <!-- Temp badge -->
+    <div class="flex justify-center gap-6 mt-16 flex-wrap fade-in-up delay-4">
+      <div class="temp-badge rounded-2xl px-6 py-4 text-center">
+        <div class="font-display text-4xl text-ice glow-text">16°C</div>
+        <div class="text-xs text-ice/60 uppercase tracking-wider mt-1">Your New Indoor Temp</div>
+      </div>
+      <div class="temp-badge rounded-2xl px-6 py-4 text-center">
+        <div class="font-display text-4xl text-ice glow-text">R350+</div>
+        <div class="text-xs text-ice/60 uppercase tracking-wider mt-1">Regas from</div>
+      </div>
+      <div class="temp-badge rounded-2xl px-6 py-4 text-center">
+        <div class="font-display text-4xl text-ice glow-text">SAME</div>
+        <div class="text-xs text-ice/60 uppercase tracking-wider mt-1">Day Service Available</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-ice/40 text-sm tracking-widest uppercase">
+    ↓ Scroll
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="ice-divider"></div>
+
+<!-- SERVICES -->
+<section class="py-20 px-4" style="background: linear-gradient(180deg, #002233 0%, #001828 100%);" id="services">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <div class="brand-badge mb-4">What We Do</div>
+      <h2 class="font-display text-5xl md:text-7xl text-white glow-text">OUR SERVICES</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Service 1 -->
+      <div class="service-card rounded-2xl p-8">
+        <div class="text-5xl mb-5 freeze-icon">❄️</div>
+        <h3 class="font-condensed font-700 text-2xl text-ice mb-3">AC Regassing</h3>
+        <p class="text-white/60 text-sm leading-relaxed mb-4">Lost that cool punch? We regas your unit with quality refrigerant — R22, R32 & R410A. Your AC will blow ice cold again in no time.</p>
+        <div class="stat-card mt-4">
+          <div class="font-condensed font-bold text-frost text-lg">From R350</div>
+          <div class="text-white/40 text-xs">Per unit, depending on size</div>
+        </div>
+      </div>
+
+      <!-- Service 2 -->
+      <div class="service-card rounded-2xl p-8 border-frost/40" style="background: rgba(0,153,204,0.1);">
+        <div class="text-5xl mb-5 freeze-icon">🔧</div>
+        <h3 class="font-condensed font-700 text-2xl text-ice mb-3">AC Installation</h3>
+        <p class="text-white/60 text-sm leading-relaxed mb-4">Full professional installation of split units and cassette ACs. We handle all the wiring, piping, and setup — neat, clean, guaranteed.</p>
+        <div class="stat-card mt-4">
+          <div class="font-condensed font-bold text-frost text-lg">Quote-Based</div>
+          <div class="text-white/40 text-xs">Free on-site consultation</div>
+        </div>
+      </div>
+
+      <!-- Service 3 -->
+      <div class="service-card rounded-2xl p-8">
+        <div class="text-5xl mb-5 freeze-icon">🛠️</div>
+        <h3 class="font-condensed font-700 text-2xl text-ice mb-3">Servicing & Repairs</h3>
+        <p class="text-white/60 text-sm leading-relaxed mb-4">Filters, fan motors, PCB boards, thermostat faults — we diagnose and repair all major brands. Keep your unit running at peak performance.</p>
+        <div class="stat-card mt-4">
+          <div class="font-condensed font-bold text-frost text-lg">From R250</div>
+          <div class="text-white/40 text-xs">Call for a fast quote</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Extra services row -->
+    <div class="grid md:grid-cols-2 gap-6 mt-6">
+      <div class="service-card rounded-2xl p-6 flex items-center gap-5">
+        <div class="text-4xl freeze-icon">🏠</div>
+        <div>
+          <h4 class="font-condensed font-700 text-xl text-ice">Residential</h4>
+          <p class="text-white/50 text-sm">Home comfort solutions for every room size</p>
+        </div>
+      </div>
+      <div class="service-card rounded-2xl p-6 flex items-center gap-5">
+        <div class="text-4xl freeze-icon">🏢</div>
+        <div>
+          <h4 class="font-condensed font-700 text-xl text-ice">Commercial</h4>
+          <p class="text-white/50 text-sm">Offices, shops, and multi-unit properties</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ice-divider"></div>
+
+<!-- WHY SHAYNE -->
+<section class="py-20 px-4" style="background: linear-gradient(180deg, #001828 0%, #002233 100%);">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-14 items-center">
+      <div>
+        <div class="brand-badge mb-5">Why Choose Us</div>
+        <h2 class="font-display text-5xl md:text-6xl text-white glow-text mb-6">COLD AIR.<br>WARM SERVICE.</h2>
+        <p class="text-white/60 leading-relaxed mb-8">Shayne has been keeping South Africa cool for years. We show up on time, charge fairly, and get the job done right — every single time.</p>
+        <div class="space-y-5">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-frost/20 border border-frost/40 flex items-center justify-center text-frost font-bold text-lg flex-shrink-0">✓</div>
+            <div>
+              <div class="font-condensed font-600 text-white text-lg">Certified & Experienced Technician</div>
+              <div class="text-white/50 text-sm">Fully qualified with years of hands-on AC experience</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-frost/20 border border-frost/40 flex items-center justify-center text-frost font-bold text-lg flex-shrink-0">✓</div>
+            <div>
+              <div class="font-condensed font-600 text-white text-lg">Same-Day & Weekend Callouts</div>
+              <div class="text-white/50 text-sm">We work around your schedule, not ours</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-frost/20 border border-frost/40 flex items-center justify-center text-frost font-bold text-lg flex-shrink-0">✓</div>
+            <div>
+              <div class="font-condensed font-600 text-white text-lg">All Major Brands Covered</div>
+              <div class="text-white/50 text-sm">Samsung, LG, Daikin, Carrier, Midea & more</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-frost/20 border border-frost/40 flex items-center justify-center text-frost font-bold text-lg flex-shrink-0">✓</div>
+            <div>
+              <div class="font-condensed font-600 text-white text-lg">Honest, Upfront Pricing</div>
+              <div class="text-white/50 text-sm">No hidden costs. No surprises. Just great service.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Contact card -->
+      <div class="temp-badge rounded-3xl p-10 text-center" style="border: 1px solid rgba(0,180,255,0.3);">
+        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-frost to-arctic flex items-center justify-center text-4xl mx-auto mb-6">👨‍🔧</div>
+        <div class="font-display text-4xl text-white glow-text mb-1">SHAYNE</div>
+        <div class="text-ice/70 text-sm tracking-widest uppercase mb-6">Your AC Specialist</div>
+
+        <div class="space-y-3 mb-8">
+          <a href="tel:0714870473" class="flex items-center justify-center gap-3 text-ice font-condensed font-600 text-xl hover:text-white transition">
+            📞 071 487 0473
+          </a>
+          <div class="text-white/40 text-sm">Available Mon–Sat | 7am – 6pm</div>
+        </div>
+
+        <button onclick="openModal()" class="btn-whatsapp w-full text-white font-condensed font-bold py-4 rounded-2xl text-xl flex items-center justify-center gap-3">
+          <svg viewBox="0 0 24 24" class="w-6 h-6 fill-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.528 5.855L.057 23.804a.5.5 0 0 0 .635.634l6.012-1.47A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.666-.502-5.198-1.382l-.372-.217-3.856.943.963-3.773-.233-.378A9.946 9.946 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          WhatsApp Shayne
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ice-divider"></div>
+
+<!-- CTA BANNER -->
+<section class="py-16 px-4 text-center" style="background: linear-gradient(135deg, #004466, #0077AA, #004466);">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="font-display text-5xl md:text-7xl text-white glow-text mb-4">HOT & BOTHERED?</h2>
+    <p class="text-ice/80 font-condensed text-xl mb-8 tracking-wide">Don't suffer the heat. Get your AC regassed or installed today.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <button onclick="openModal()" class="btn-whatsapp text-white font-condensed font-bold px-10 py-5 rounded-full text-2xl flex items-center justify-center gap-3 mx-auto sm:mx-0">
+        <svg viewBox="0 0 24 24" class="w-7 h-7 fill-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.528 5.855L.057 23.804a.5.5 0 0 0 .635.634l6.012-1.47A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.666-.502-5.198-1.382l-.372-.217-3.856.943.963-3.773-.233-.378A9.946 9.946 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Book via WhatsApp
+      </button>
+      <a href="tel:0714870473" class="bg-white/10 border border-white/30 text-white font-condensed font-bold px-10 py-5 rounded-full text-2xl hover:bg-white/20 transition mx-auto sm:mx-0">
+        📞 Call Now
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:#001018;" class="py-10 px-4 text-center border-t border-frost/10">
+  <div class="max-w-4xl mx-auto">
+    <div class="font-display text-3xl text-ice glow-text mb-2">SHAYNE'S AC SERVICES</div>
+    <div class="text-white/40 text-sm mb-4">Air Conditioner Regassing & Installation</div>
+    <div class="flex flex-wrap justify-center gap-6 text-white/50 text-sm mb-6">
+      <a href="tel:0714870473" class="hover:text-frost transition">📞 071 487 0473</a>
+      <button onclick="openModal()" class="hover:text-green-400 transition">💬 WhatsApp</button>
+    </div>
+    <div class="text-white/20 text-xs">
+      © 2025 Shayne's AC Services · Powered by <span class="text-frost/50">WebConnect</span> · Ref: 0633274413
+    </div>
+  </div>
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<div class="wa-float" onclick="openModal()" title="Chat with Shayne on WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.528 5.855L.057 23.804a.5.5 0 0 0 .635.634l6.012-1.47A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.666-.502-5.198-1.382l-.372-.217-3.856.943.963-3.773-.233-.378A9.946 9.946 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+</div>
+
+<!-- MODAL: Activate Web Account -->
+<div class="modal-overlay" id="waModal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center mb-4 shadow-lg" style="box-shadow:0 0 30px rgba(37,211,102,0.5);">
+        <svg viewBox="0 0 24 24" class="w-9 h-9 fill-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.528 5.855L.057 23.804a.5.5 0 0 0 .635.634l6.012-1.47A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.666-.502-5.198-1.382l-.372-.217-3.856.943.963-3.773-.233-.378A9.946 9.946 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      </div>
+      <h3 class="font-display text-3xl text-white glow-text">ACTIVATE YOUR WEB ACCOUNT</h3>
+      <p class="text-ice/60 text-sm mt-2">Unlock direct WhatsApp contact with Shayne — anytime, anywhere</p>
+    </div>
+
+    <!-- Benefits -->
+    <div class="space-y-3 mb-7">
+      <div class="flex items-center gap-3 bg-white/5 rounded-xl px-4 py-3">
+        <span class="text-green-400 text-lg">✓</span>
+        <span class="text-white/80 text-sm">Message Shayne directly on WhatsApp Business</span>
+      </div>
+      <div class="flex items-center gap-3 bg-white/5 rounded-xl px-4 py-3">
+        <span class="text-green-400 text-lg">✓</span>
+        <span class="text-white/80 text-sm">Get instant quotes, booking confirmations & updates</span>
+      </div>
+      <div class="flex items-center gap-3 bg-white/5 rounded-xl px-4 py-3">
+        <span class="text-green-400 text-lg">✓</span>
+        <span class="text-white/80 text-sm">Contact & connect at any time — 24/7 access</span>
+      </div>
+      <div class="flex items-center gap-3 bg-white/5 rounded-xl px-4 py-3">
+        <span class="text-green-400 text-lg">✓</span>
+        <span class="text-white/80 text-sm">Priority callback and same-day booking access</span>
+      </div>
+    </div>
+
+    <!-- Price highlight -->
+    <div class="text-center bg-gradient-to-r from-frost/10 to-arctic/20 border border-frost/30 rounded-2xl py-4 mb-7">
+      <div class="text-ice/60 text-xs uppercase tracking-widest mb-1">One-Time Activation Fee</div>
+      <div class="font-display text-4xl text-white glow-text">VERY SMALL FEE</div>
+      <div class="text-white/40 text-xs mt-1">Full lifetime web access included</div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="space-y-3">
+      <a href="https://wa.me/27714870473?text=Hi%20Shayne!%20I%20want%20to%20activate%20my%20web%20account%20and%20enquire%20about%20AC%20services." 
+         target="_blank"
+         class="btn-whatsapp w-full text-white font-condensed font-bold py-4 rounded-2xl text-xl flex items-center justify-center gap-3">
+        <svg viewBox="0 0 24 24" class="w-6 h-6 fill-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.528 5.855L.057 23.804a.5.5 0 0 0 .635.634l6.012-1.47A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.666-.502-5.198-1.382l-.372-.217-3.856.943.963-3.773-.233-.378A9.946 9.946 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Activate on WhatsApp
+      </a>
+      <button onclick="closeModal()" class="w-full text-white/40 text-sm hover:text-white/60 transition py-2">
+        Maybe later
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Snowflakes
+  function createSnow() {
+    const container = document.getElementById('snowContainer');
+    for (let i = 0; i < 25; i++) {
+      const flake = document.createElement('div');
+      flake.className = 'snowflake';
+      flake.style.left = Math.random() * 100 + '%';
+      flake.style.width = flake.style.height = (Math.random() * 5 + 3) + 'px';
+      flake.style.animationDuration = (Math.random() * 8 + 5) + 's';
+      flake.style.animationDelay = (Math.random() * 8) + 's';
+      flake.style.opacity = Math.random() * 0.6 + 0.2;
+      container.appendChild(flake);
+    }
+  }
+  createSnow();
+
+  // Modal
+  function openModal() {
+    document.getElementById('waModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('waModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('waModal')) closeModal();
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
