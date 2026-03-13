@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fridge Repairs Western Cape | Same Day Service</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ice: #e8f4f8;
+      --frost: #b8dde8;
+      --cool: #3a8fa3;
+      --deep: #1a4a57;
+      --arctic: #0d2e38;
+      --spark: #00d4aa;
+      --warm: #ff6b35;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--arctic);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    .bebas { font-family: 'Bebas Neue', sans-serif; }
+
+    /* Frosted glass */
+    .glass {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Animated gradient bg */
+    .hero-bg {
+      background: 
+        radial-gradient(ellipse at 20% 50%, rgba(0,212,170,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(58,143,163,0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(26,74,87,0.4) 0%, transparent 60%),
+        var(--arctic);
+    }
+
+    /* Ice texture overlay */
+    .ice-texture::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0,212,170,0.4); }
+      50% { box-shadow: 0 0 40px rgba(0,212,170,0.8), 0 0 60px rgba(0,212,170,0.3); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .fade-up { animation: fadeUp 0.8s ease forwards; }
+    .fade-up-1 { animation: fadeUp 0.8s 0.1s ease both; }
+    .fade-up-2 { animation: fadeUp 0.8s 0.25s ease both; }
+    .fade-up-3 { animation: fadeUp 0.8s 0.4s ease both; }
+    .fade-up-4 { animation: fadeUp 0.8s 0.55s ease both; }
+
+    .wa-btn {
+      animation: pulseGlow 2.5s ease-in-out infinite;
+    }
+    .wa-btn:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s ease;
+    }
+
+    .float-icon { animation: float 3s ease-in-out infinite; }
+
+    .shimmer-text {
+      background: linear-gradient(90deg, #00d4aa, #fff, #00d4aa);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(13,46,56,0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,212,170,0.2);
+    }
+
+    /* Cards */
+    .brand-card {
+      transition: transform 0.2s, border-color 0.2s;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .brand-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--spark);
+    }
+
+    .service-card {
+      transition: transform 0.25s, background 0.25s;
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      background: rgba(0,212,170,0.1);
+    }
+
+    /* Guarantee ribbon */
+    .guarantee-badge {
+      background: conic-gradient(from 0deg, var(--spark), var(--cool), var(--spark));
+      animation: spin-slow 8s linear infinite;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--spark), transparent);
+    }
+
+    /* Scroll fade in */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Phone link */
+    .phone-link {
+      color: var(--spark);
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .phone-link:hover { color: #fff; }
+
+    /* Star rating */
+    .stars { color: #fbbf24; letter-spacing: 2px; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--arctic); }
+    ::-webkit-scrollbar-thumb { background: var(--cool); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────────────────────────────── -->
+<nav class="px-6 py-4">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-4xl float-icon">🧊</span>
+      <div>
+        <div class="bebas text-2xl text-white leading-none tracking-widest">FRIDGE REPAIRS</div>
+        <div class="text-xs text-cyan-400 tracking-widest uppercase">Western Cape</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="tel:0764496788" class="hidden sm:flex items-center gap-2 text-sm font-medium text-white bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-all">
+        📞 <span class="font-bold tracking-wider">076 449 6788</span>
+      </a>
+      <button onclick="openModal()" class="wa-btn flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded-full text-sm font-bold transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.553 4.117 1.522 5.847L.057 23.882l6.197-1.625A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.6-.476-5.123-1.313l-.368-.217-3.812 1 1.019-3.718-.24-.382A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        WhatsApp
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────────────────── -->
+<section class="hero-bg relative ice-texture min-h-screen flex items-center pt-24 pb-16 px-6 overflow-hidden">
+  <!-- Decorative circles -->
+  <div class="absolute top-20 right-[-80px] w-96 h-96 rounded-full border border-cyan-500/10"></div>
+  <div class="absolute top-40 right-[-40px] w-64 h-64 rounded-full border border-cyan-500/15"></div>
+  <div class="absolute bottom-10 left-[-60px] w-80 h-80 rounded-full border border-teal-500/10"></div>
+
+  <div class="max-w-6xl mx-auto w-full relative z-10">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <!-- Left copy -->
+      <div>
+        <div class="fade-up-1 inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm text-cyan-300 mb-6">
+          <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+          Available Now · All Areas Western Cape
+        </div>
+
+        <h1 class="fade-up-2 bebas text-6xl sm:text-7xl xl:text-8xl leading-none mb-4">
+          <span class="text-white">FRIDGE</span><br>
+          <span class="shimmer-text">REPAIRS</span><br>
+          <span class="text-white">ON-SITE</span>
+        </h1>
+
+        <p class="fade-up-3 text-lg text-slate-300 max-w-md mb-8 leading-relaxed">
+          Qualified technicians with <strong class="text-white">5+ years experience</strong>. Same-day repairs on all makes and models — right at your door.
+        </p>
+
+        <!-- CTAs -->
+        <div class="fade-up-4 flex flex-wrap gap-4 mb-10">
+          <button onclick="openModal()" class="wa-btn flex items-center gap-3 bg-green-500 hover:bg-green-400 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.553 4.117 1.522 5.847L.057 23.882l6.197-1.625A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.6-.476-5.123-1.313l-.368-.217-3.812 1 1.019-3.718-.24-.382A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            WhatsApp Us Now
+          </button>
+          <a href="tel:0764496788" class="flex items-center gap-3 glass text-white font-bold px-8 py-4 rounded-2xl text-lg hover:bg-white/10 transition-all">
+            📞 076 449 6788
+          </a>
+        </div>
+
+        <!-- Quick stats -->
+        <div class="fade-up-4 grid grid-cols-3 gap-4">
+          <div class="glass rounded-2xl p-4 text-center">
+            <div class="bebas text-3xl text-cyan-400">R350</div>
+            <div class="text-xs text-slate-400 mt-1">Regas Price</div>
+          </div>
+          <div class="glass rounded-2xl p-4 text-center">
+            <div class="bebas text-3xl text-cyan-400">SAME</div>
+            <div class="text-xs text-slate-400 mt-1">Day Service</div>
+          </div>
+          <div class="glass rounded-2xl p-4 text-center">
+            <div class="bebas text-3xl text-cyan-400">3 MO</div>
+            <div class="text-xs text-slate-400 mt-1">Guarantee</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right visual -->
+      <div class="hidden lg:flex justify-center items-center relative">
+        <div class="relative w-72 h-72">
+          <!-- Outer glow ring -->
+          <div class="absolute inset-0 rounded-full" style="background: radial-gradient(circle, rgba(0,212,170,0.2) 0%, transparent 70%);"></div>
+          <!-- Spinning border -->
+          <div class="absolute inset-4 rounded-full border-2 border-dashed border-cyan-500/30" style="animation: spin-slow 20s linear infinite;"></div>
+          <!-- Center icon -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="text-9xl" style="animation: float 4s ease-in-out infinite;">🧊</div>
+            <div class="bebas text-2xl text-cyan-400 mt-2 tracking-widest">STAY COOL</div>
+          </div>
+          <!-- Orbit badges -->
+          <div class="absolute -top-2 left-1/2 -translate-x-1/2 glass px-3 py-1 rounded-full text-xs text-white whitespace-nowrap">✅ Same Day</div>
+          <div class="absolute top-1/2 -right-6 -translate-y-1/2 glass px-3 py-1 rounded-full text-xs text-white whitespace-nowrap">🔧 On-Site</div>
+          <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 glass px-3 py-1 rounded-full text-xs text-white whitespace-nowrap">⭐ 5+ Yrs Exp</div>
+          <div class="absolute top-1/2 -left-6 -translate-y-1/2 glass px-3 py-1 rounded-full text-xs text-white whitespace-nowrap">🛡️ 3 Mo Guarantee</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES ───────────────────────────────────────────────────── -->
+<section class="py-20 px-6 bg-gradient-to-b from-[#0d2e38] to-[#0a2430]">
+  <div class="max-w-6xl mx-auto">
+    <div class="reveal text-center mb-14">
+      <div class="bebas text-5xl text-white mb-2">WHAT WE FIX</div>
+      <p class="text-slate-400">All makes, all models, all cooling appliances</p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <!-- Service items -->
+      <div class="reveal service-card glass rounded-2xl p-5 text-center cursor-pointer" onclick="openModal()">
+        <div class="text-4xl mb-3">🧊</div>
+        <div class="font-bold text-white text-sm">Fridges</div>
+        <div class="text-xs text-slate-400 mt-1">All types</div>
+      </div>
+      <div class="reveal service-card glass rounded-2xl p-5 text-center cursor-pointer" onclick="openModal()">
+        <div class="text-4xl mb-3">❄️</div>
+        <div class="font-bold text-white text-sm">Freezers</div>
+        <div class="text-xs text-slate-400 mt-1">Chest & upright</div>
+      </div>
+      <div class="reveal service-card glass rounded-2xl p-5 text-center cursor-pointer" onclick="openModal()">
+        <div class="text-4xl mb-3">🏠</div>
+        <div class="font-bold text-white text-sm">Under-Counter</div>
+        <div class="text-xs text-slate-400 mt-1">Bar fridges</div>
+      </div>
+      <div class="reveal service-card glass rounded-2xl p-5 text-center cursor-pointer" onclick="openModal()">
+        <div class="text-4xl mb-3">🏢</div>
+        <div class="font-bold text-white text-sm">Rooms</div>
+        <div class="text-xs text-slate-400 mt-1">Cold rooms</div>
+      </div>
+      <div class="reveal service-card glass rounded-2xl p-5 text-center cursor-pointer" onclick="openModal()">
+        <div class="text-4xl mb-3">🍺</div>
+        <div class="font-bold text-white text-sm">Chillers</div>
+        <div class="text-xs text-slate-400 mt-1">Commercial</div>
+      </div>
+      <div class="reveal service-card glass rounded-2xl p-5 text-center cursor-pointer" onclick="openModal()">
+        <div class="text-4xl mb-3">💨</div>
+        <div class="font-bold text-white text-sm">Re-Gas</div>
+        <div class="text-xs text-slate-400 mt-1">From R350</div>
+      </div>
+    </div>
+
+    <div class="divider my-14"></div>
+
+    <!-- Regas callout -->
+    <div class="reveal glass rounded-3xl p-8 sm:p-12 flex flex-col sm:flex-row items-center gap-8">
+      <div class="text-7xl float-icon">💨</div>
+      <div class="flex-1 text-center sm:text-left">
+        <div class="bebas text-4xl text-white mb-2">REGAS SPECIAL</div>
+        <p class="text-slate-300">Is your fridge not cooling properly? It might just need a regas. We come to you, no need to transport anything.</p>
+      </div>
+      <div class="text-center">
+        <div class="bebas text-6xl text-cyan-400">R350</div>
+        <div class="text-slate-400 text-sm mb-4">Starting price</div>
+        <button onclick="openModal()" class="wa-btn flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-3 rounded-2xl transition-all mx-auto">
+          Book Regas
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BRANDS ─────────────────────────────────────────────────────── -->
+<section class="py-20 px-6" style="background: #081e26;">
+  <div class="max-w-6xl mx-auto">
+    <div class="reveal text-center mb-12">
+      <div class="bebas text-5xl text-white mb-2">BRANDS WE SPECIALISE IN</div>
+      <p class="text-slate-400">We repair all makes — here are our key specialisations</p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+      <!-- Brand badges -->
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">Samsung</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">LG</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">Hisense</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">Whirlpool</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">Speed Queen</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">Bosch</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">SMEG</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">KIC</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">Fridge Master</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">Defy</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-white font-bold text-sm">Coca-Cola</div>
+      <div class="reveal brand-card glass rounded-xl px-4 py-3 text-center text-cyan-400 font-bold text-sm">+ Many More</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHY US ─────────────────────────────────────────────────────── -->
+<section class="py-20 px-6 bg-gradient-to-b from-[#081e26] to-[#0d2e38]">
+  <div class="max-w-6xl mx-auto">
+    <div class="reveal text-center mb-14">
+      <div class="bebas text-5xl text-white mb-2">WHY CHOOSE US</div>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="reveal glass rounded-2xl p-7 text-center service-card">
+        <div class="text-5xl mb-4">⚡</div>
+        <div class="bebas text-2xl text-cyan-400 mb-2">SAME DAY</div>
+        <p class="text-slate-300 text-sm leading-relaxed">Don't wait — we aim to reach you the same day you call. No more warm food or spoiled groceries.</p>
+      </div>
+      <div class="reveal glass rounded-2xl p-7 text-center service-card">
+        <div class="text-5xl mb-4">🏆</div>
+        <div class="bebas text-2xl text-cyan-400 mb-2">5+ YEARS EXP</div>
+        <p class="text-slate-300 text-sm leading-relaxed">Our qualified technicians have years of hands-on experience diagnosing and fixing all types of cooling appliances.</p>
+      </div>
+      <div class="reveal glass rounded-2xl p-7 text-center service-card">
+        <div class="text-5xl mb-4">🛡️</div>
+        <div class="bebas text-2xl text-cyan-400 mb-2">3 MONTHS GUARANTEE</div>
+        <p class="text-slate-300 text-sm leading-relaxed">Every repair comes with a 3-month guarantee. We stand behind our work — if it breaks again, we fix it.</p>
+      </div>
+      <div class="reveal glass rounded-2xl p-7 text-center service-card">
+        <div class="text-5xl mb-4">🚗</div>
+        <div class="bebas text-2xl text-cyan-400 mb-2">ON-SITE</div>
+        <p class="text-slate-300 text-sm leading-relaxed">We come to your home or business. No transportation hassle — we repair right where your fridge stands.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COVERAGE ───────────────────────────────────────────────────── -->
+<section class="py-20 px-6" style="background: #0a2430;">
+  <div class="max-w-4xl mx-auto text-center">
+    <div class="reveal bebas text-5xl text-white mb-4">WE COVER ALL OF</div>
+    <div class="reveal bebas text-6xl shimmer-text mb-8">WESTERN CAPE</div>
+    <div class="reveal glass rounded-3xl p-8">
+      <p class="text-slate-300 text-lg leading-relaxed">
+        From <strong class="text-white">Cape Town</strong> to the <strong class="text-white">Winelands</strong>, <strong class="text-white">Helderberg</strong>, <strong class="text-white">Overberg</strong>, <strong class="text-white">Garden Route</strong> and everywhere in between — our technicians reach you wherever you are in the Western Cape.
+      </p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3 text-sm">
+        <span class="glass px-4 py-2 rounded-full text-slate-300">Cape Town</span>
+        <span class="glass px-4 py-2 rounded-full text-slate-300">Bellville</span>
+        <span class="glass px-4 py-2 rounded-full text-slate-300">Stellenbosch</span>
+        <span class="glass px-4 py-2 rounded-full text-slate-300">Somerset West</span>
+        <span class="glass px-4 py-2 rounded-full text-slate-300">Paarl</span>
+        <span class="glass px-4 py-2 rounded-full text-slate-300">George</span>
+        <span class="glass px-4 py-2 rounded-full text-slate-300">Hermanus</span>
+        <span class="glass px-4 py-2 rounded-full text-slate-300">Strand</span>
+        <span class="glass px-4 py-2 rounded-full text-slate-300">& All Surrounding Areas</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ────────────────────────────────────────────────────── -->
+<section class="py-20 px-6 bg-gradient-to-b from-[#0a2430] to-[#0d2e38]" id="contact">
+  <div class="max-w-4xl mx-auto text-center">
+    <div class="reveal bebas text-5xl text-white mb-4">GET IN TOUCH</div>
+    <p class="reveal text-slate-400 mb-12">Ready to have your fridge fixed? Reach out now — we respond fast.</p>
+
+    <div class="grid sm:grid-cols-2 gap-6 mb-10">
+      <!-- Call -->
+      <div class="reveal glass rounded-3xl p-8">
+        <div class="text-5xl mb-4">📞</div>
+        <div class="bebas text-2xl text-white mb-2">CALL US</div>
+        <a href="tel:0764496788" class="phone-link text-2xl block mb-4">076 449 6788</a>
+        <p class="text-slate-400 text-sm">Mon–Sat: 7am – 7pm<br>Emergency calls welcome</p>
+        <a href="tel:0764496788" class="mt-6 inline-block glass hover:bg-white/10 text-white font-bold px-6 py-3 rounded-xl transition-all">
+          Call Now
+        </a>
+      </div>
+      <!-- WhatsApp -->
+      <div class="reveal glass rounded-3xl p-8 border border-green-500/30">
+        <div class="text-5xl mb-4">💬</div>
+        <div class="bebas text-2xl text-white mb-2">WHATSAPP</div>
+        <p class="text-slate-300 mb-4">Send us a message anytime. Describe your problem and we'll get back to you right away.</p>
+        <button onclick="openModal()" class="wa-btn flex items-center gap-3 bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-3 rounded-xl transition-all mx-auto">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.553 4.117 1.522 5.847L.057 23.882l6.197-1.625A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.6-.476-5.123-1.313l-.368-.217-3.812 1 1.019-3.718-.24-.382A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          Open WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+<footer class="py-10 px-6 border-t border-white/10" style="background: #081e26;">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-sm">
+    <div class="flex items-center gap-2">
+      <span class="text-2xl">🧊</span>
+      <span class="bebas text-lg text-white tracking-widest">FRIDGE REPAIRS WESTERN CAPE</span>
+    </div>
+    <div>3-Month Guarantee · Same Day Service · All Areas Western Cape</div>
+    <div><a href="tel:0764496788" class="text-cyan-400 hover:text-white transition-colors font-bold">076 449 6788</a></div>
+  </div>
+</footer>
+
+<!-- ── FLOATING WhatsApp BUTTON ───────────────────────────────────── -->
+<button onclick="openModal()" class="fixed bottom-6 right-6 z-50 wa-btn bg-green-500 hover:bg-green-400 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all" title="WhatsApp Us">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.553 4.117 1.522 5.847L.057 23.882l6.197-1.625A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.6-.476-5.123-1.313l-.368-.217-3.812 1 1.019-3.718-.24-.382A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+</button>
+
+<!-- ── MODAL: Activate WhatsApp Account ───────────────────────────── -->
+<div class="modal-overlay" id="waModal" onclick="closeModalOutside(event)">
+  <div class="relative max-w-md w-full mx-4 rounded-3xl overflow-hidden" style="background: linear-gradient(135deg, #0d2e38, #1a4a57); border: 1px solid rgba(0,212,170,0.3);">
+    <!-- Top glow -->
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #00d4aa, #3a8fa3, #00d4aa);"></div>
+
+    <!-- Close -->
+    <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-all text-xl">&times;</button>
+
+    <div class="p-8 text-center">
+      <!-- Icon -->
+      <div class="w-20 h-20 rounded-full bg-green-500/20 border-2 border-green-400 flex items-center justify-center mx-auto mb-6" style="animation: pulseGlow 2s ease-in-out infinite;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-green-400" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.553 4.117 1.522 5.847L.057 23.882l6.197-1.625A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.6-.476-5.123-1.313l-.368-.217-3.812 1 1.019-3.718-.24-.382A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      </div>
+
+      <div class="bebas text-3xl text-white mb-2">ACTIVATE YOUR WEB ACCOUNT</div>
+      <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+        Unlock direct WhatsApp Business support so your customers can <strong class="text-white">contact and connect with you at any time</strong> — day or night, weekends included.
+      </p>
+
+      <!-- Benefits list -->
+      <div class="glass rounded-2xl p-5 mb-6 text-left space-y-3">
+        <div class="flex items-center gap-3 text-sm text-slate-200">
+          <span class="text-green-400 text-base">✅</span> Customers reach you directly via WhatsApp
+        </div>
+        <div class="flex items-center gap-3 text-sm text-slate-200">
+          <span class="text-green-400 text-base">✅</span> 24/7 connection — never miss a booking
+        </div>
+        <div class="flex items-center gap-3 text-sm text-slate-200">
+          <span class="text-green-400 text-base">✅</span> Instant replies & booking confirmations
+        </div>
+        <div class="flex items-center gap-3 text-sm text-slate-200">
+          <span class="text-green-400 text-base">✅</span> One-time activation for a very small fee
+        </div>
+      </div>
+
+      <!-- Fee badge -->
+      <div class="inline-flex items-center gap-2 bg-cyan-500/20 border border-cyan-400/40 px-5 py-2 rounded-full text-cyan-300 text-sm font-bold mb-6">
+        💳 Very small once-off activation fee
+      </div>
+
+      <!-- CTA buttons -->
+      <div class="flex flex-col gap-3">
+        <a href="https://wa.me/27764496788?text=Hi%2C%20I%27d%20like%20to%20activate%20my%20WhatsApp%20Business%20web%20account%20and%20learn%20more!" target="_blank"
+           class="wa-btn flex items-center justify-center gap-3 bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-4 rounded-2xl transition-all text-base">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.553 4.117 1.522 5.847L.057 23.882l6.197-1.625A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.6-.476-5.123-1.313l-.368-.217-3.812 1 1.019-3.718-.24-.382A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          Activate Now via WhatsApp
+        </a>
+        <button onclick="closeModal()" class="text-slate-500 hover:text-slate-300 text-sm transition-colors py-2">
+          Maybe later
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCRIPTS ─────────────────────────────────────────────────────── -->
+<script>
+  // Modal
+  function openModal() {
+    document.getElementById('waModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('waModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('waModal')) closeModal();
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
