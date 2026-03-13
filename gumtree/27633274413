@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FrostFix Pro | Fridge Repair & Regas Specialists</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ice: #c8f0ff;
+    --frost: #0ea5e9;
+    --deep: #0c1a2e;
+    --steel: #1e3a5f;
+    --flash: #00e5ff;
+    --warm: #ff6b35;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--deep);
+    color: #e2f4ff;
+    overflow-x: hidden;
+  }
+
+  /* Animated frost grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  h1, h2, h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.04em; }
+
+  .heading-alt { font-family: 'Barlow Condensed', sans-serif; }
+
+  /* Frost glow effect */
+  .glow { text-shadow: 0 0 30px rgba(0,229,255,0.6), 0 0 60px rgba(0,229,255,0.2); }
+
+  /* Hero */
+  .hero-bg {
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14,165,233,0.2) 0%, transparent 70%),
+                linear-gradient(180deg, #0c1a2e 0%, #071220 100%);
+    position: relative;
+  }
+
+  /* Ice texture overlay */
+  .ice-overlay {
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(0,229,255,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(14,165,233,0.06) 0%, transparent 40%);
+  }
+
+  /* Service cards */
+  .service-card {
+    background: linear-gradient(135deg, rgba(30,58,95,0.8) 0%, rgba(12,26,46,0.9) 100%);
+    border: 1px solid rgba(0,229,255,0.12);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--flash), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+  .service-card:hover::before { transform: translateX(0); }
+  .service-card:hover {
+    border-color: rgba(0,229,255,0.35);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,229,255,0.1);
+  }
+
+  /* CTA Button */
+  .btn-wa {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(37,211,102,0.35);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-wa::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    border-radius: 50px;
+  }
+  .btn-wa:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 16px 48px rgba(37,211,102,0.5);
+  }
+
+  .btn-call {
+    background: linear-gradient(135deg, var(--warm) 0%, #e04e1e 100%);
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(255,107,53,0.35);
+  }
+  .btn-call:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 16px 48px rgba(255,107,53,0.5);
+  }
+
+  /* Badge pulse */
+  .pulse-badge {
+    animation: pulse-glow 2s infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,255,0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(0,229,255,0); }
+  }
+
+  /* Floating snowflakes */
+  .flake {
+    position: absolute;
+    color: rgba(0,229,255,0.2);
+    font-size: 20px;
+    animation: float-down linear infinite;
+    pointer-events: none;
+  }
+  @keyframes float-down {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* Number ticker */
+  .stat-box {
+    background: linear-gradient(135deg, rgba(0,229,255,0.08) 0%, rgba(14,165,233,0.04) 100%);
+    border: 1px solid rgba(0,229,255,0.15);
+    border-radius: 12px;
+  }
+
+  /* WhatsApp modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .modal-backdrop.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .modal-box {
+    background: linear-gradient(145deg, #0f2540 0%, #081829 100%);
+    border: 1px solid rgba(0,229,255,0.25);
+    border-radius: 24px;
+    max-width: 480px;
+    width: 92%;
+    padding: 40px;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .modal-backdrop.active .modal-box {
+    transform: scale(1) translateY(0);
+  }
+  .modal-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--flash), #25d366, var(--flash));
+  }
+
+  /* Floating WA button */
+  .wa-float {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 500;
+    width: 60px;
+    height: 60px;
+    background: #25d366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(37,211,102,0.5);
+    cursor: pointer;
+    animation: float-bounce 3s ease-in-out infinite;
+    transition: transform 0.2s ease;
+  }
+  .wa-float:hover { transform: scale(1.1); }
+  @keyframes float-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Section divider */
+  .frost-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,255,0.3), transparent);
+  }
+
+  /* Entrance animations */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Scroll reveal stagger */
+  .stagger-1 { transition-delay: 0.1s; }
+  .stagger-2 { transition-delay: 0.2s; }
+  .stagger-3 { transition-delay: 0.3s; }
+  .stagger-4 { transition-delay: 0.4s; }
+  .stagger-5 { transition-delay: 0.5s; }
+  .stagger-6 { transition-delay: 0.6s; }
+
+  /* Thermometer animation */
+  .temp-bar {
+    animation: temp-rise 2s ease-out forwards;
+    height: 0%;
+  }
+  @keyframes temp-rise {
+    to { height: 70%; }
+  }
+
+  nav { backdrop-filter: blur(16px); }
+
+  .nav-link {
+    position: relative;
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(200,240,255,0.7);
+    transition: color 0.2s;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 1px;
+    background: var(--flash);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+  }
+  .nav-link:hover { color: var(--flash); }
+  .nav-link:hover::after { transform: scaleX(1); }
+
+  /* Testimonial */
+  .review-card {
+    background: linear-gradient(135deg, rgba(30,58,95,0.6) 0%, rgba(12,26,46,0.8) 100%);
+    border: 1px solid rgba(0,229,255,0.1);
+    border-radius: 16px;
+  }
+
+  .same-day-badge {
+    background: linear-gradient(135deg, var(--warm), #c0392b);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 4px 14px;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating snowflakes -->
+<div id="snowflakes" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/5" style="background: rgba(7,18,32,0.85);">
+  <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xl" style="background: linear-gradient(135deg, var(--frost), var(--flash));">❄️</div>
+      <div>
+        <div class="heading-alt font-bold text-white text-lg leading-none tracking-wide">FROSTFIX PRO</div>
+        <div class="text-xs" style="color: rgba(0,229,255,0.6); letter-spacing: 0.08em;">APPLIANCE SPECIALISTS</div>
+      </div>
+    </div>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#why-us" class="nav-link">Why Us</a>
+      <a href="#contact" class="nav-link">Contact</a>
+      <button onclick="openModal()" class="btn-wa text-white text-sm px-5 py-2.5 flex items-center gap-2 cursor-pointer border-0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </button>
+    </div>
+    <!-- Mobile menu btn -->
+    <button onclick="openModal()" class="md:hidden btn-wa text-white text-sm px-4 py-2.5 flex items-center gap-2 border-0 cursor-pointer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Chat
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-bg ice-overlay min-h-screen flex flex-col justify-center relative pt-24 pb-16 px-5 overflow-hidden">
+  <!-- Decorative circles -->
+  <div class="absolute top-1/4 right-[-10%] w-80 h-80 rounded-full opacity-10 pointer-events-none" style="background: radial-gradient(circle, var(--flash) 0%, transparent 70%);"></div>
+  <div class="absolute bottom-1/4 left-[-5%] w-60 h-60 rounded-full opacity-8 pointer-events-none" style="background: radial-gradient(circle, var(--frost) 0%, transparent 70%);"></div>
+
+  <div class="max-w-6xl mx-auto relative z-10 w-full">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <div class="same-day-badge text-white mb-5">⚡ Same Day Service Available</div>
+        <h1 class="text-7xl md:text-8xl leading-none text-white glow mb-4">
+          FRIDGE<br>
+          <span style="color: var(--flash);">REPAIR</span><br>
+          & REGAS
+        </h1>
+        <p class="text-lg mb-8 leading-relaxed" style="color: rgba(200,240,255,0.75);">
+          Expert appliance repair across fridges, cold rooms, dryers, thermostats & more. Fast, reliable, same-day solutions — just one call away.
+        </p>
+        <div class="flex flex-wrap gap-4 mb-10">
+          <button onclick="openModal()" class="btn-wa text-white font-semibold px-7 py-4 text-base flex items-center gap-3 cursor-pointer border-0">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp Us Now
+          </button>
+          <a href="tel:0633274413" class="btn-call text-white font-semibold px-7 py-4 text-base flex items-center gap-3 no-underline" style="border-radius:50px;">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            063 327 4413
+          </a>
+        </div>
+        <!-- Trust badges -->
+        <div class="flex flex-wrap gap-3">
+          <div class="stat-box px-4 py-2 flex items-center gap-2">
+            <span style="color: var(--flash);">🔧</span>
+            <span class="text-sm font-medium text-white">Same Day Repairs</span>
+          </div>
+          <div class="stat-box px-4 py-2 flex items-center gap-2">
+            <span style="color: var(--flash);">❄️</span>
+            <span class="text-sm font-medium text-white">Gas Regas Specialists</span>
+          </div>
+          <div class="stat-box px-4 py-2 flex items-center gap-2">
+            <span style="color: var(--flash);">✓</span>
+            <span class="text-sm font-medium text-white">Fully Qualified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fridge visual -->
+      <div class="hidden md:flex justify-center items-center relative">
+        <div class="relative" style="width: 260px;">
+          <!-- Fridge body -->
+          <div class="relative mx-auto" style="width:220px; height:380px; background: linear-gradient(180deg, #1a3a5c 0%, #0f2540 100%); border-radius: 20px; border: 2px solid rgba(0,229,255,0.25); box-shadow: 0 0 80px rgba(0,229,255,0.15), inset 0 0 30px rgba(0,229,255,0.05);">
+            <!-- Freezer -->
+            <div class="absolute top-4 left-4 right-4" style="height: 120px; background: linear-gradient(180deg, rgba(0,229,255,0.15) 0%, rgba(14,165,233,0.05) 100%); border-radius: 12px; border: 1px solid rgba(0,229,255,0.2);">
+              <div class="flex items-center justify-center h-full">
+                <span style="font-size:40px; filter: drop-shadow(0 0 10px rgba(0,229,255,0.8));">❄️</span>
+              </div>
+            </div>
+            <!-- Fridge compartment -->
+            <div class="absolute left-4 right-4" style="top: 140px; bottom: 16px; background: rgba(0,229,255,0.04); border-radius: 12px; border: 1px solid rgba(0,229,255,0.12);">
+              <div class="flex flex-col items-center justify-center h-full gap-3 opacity-40">
+                <div class="w-16 h-1 rounded" style="background: rgba(0,229,255,0.5);"></div>
+                <div class="w-12 h-1 rounded" style="background: rgba(0,229,255,0.3);"></div>
+                <div class="w-16 h-1 rounded" style="background: rgba(0,229,255,0.5);"></div>
+              </div>
+            </div>
+            <!-- Handle -->
+            <div class="absolute right-3 top-1/4" style="width: 8px; height: 60px; background: rgba(0,229,255,0.4); border-radius: 4px; box-shadow: 0 0 10px rgba(0,229,255,0.3);"></div>
+            <!-- Middle divider -->
+            <div class="absolute left-0 right-0" style="top: 132px; height: 2px; background: linear-gradient(90deg, transparent, rgba(0,229,255,0.4), transparent);"></div>
+          </div>
+          <!-- Glow underneath -->
+          <div class="absolute -bottom-8 left-1/2 -translate-x-1/2" style="width:160px; height:30px; background: rgba(0,229,255,0.2); filter: blur(20px); border-radius: 50%;"></div>
+          <!-- Floating temp indicator -->
+          <div class="absolute -right-12 top-1/3 stat-box px-3 py-2 text-center" style="min-width:80px;">
+            <div class="text-2xl font-bold" style="color: var(--flash); font-family: 'Bebas Neue';">2°C</div>
+            <div class="text-xs" style="color: rgba(200,240,255,0.6);">Optimal</div>
+          </div>
+          <div class="pulse-badge absolute -left-12 top-1/2 stat-box px-3 py-2 text-center" style="min-width:80px;">
+            <div class="text-xs font-bold text-green-400">● FIXED</div>
+            <div class="text-xs" style="color: rgba(200,240,255,0.6);">Today</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+    <span class="text-xs tracking-widest uppercase" style="color: var(--flash);">Scroll</span>
+    <div class="w-px h-12 bg-gradient-to-b from-cyan-400 to-transparent"></div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="frost-divider"></div>
+<section style="background: rgba(0,229,255,0.03);" class="py-8 px-5">
+  <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div class="text-center">
+      <div class="text-4xl font-bold text-white glow" style="font-family:'Bebas Neue';">500+</div>
+      <div class="text-sm mt-1" style="color: rgba(200,240,255,0.55);">Fridges Repaired</div>
+    </div>
+    <div class="text-center">
+      <div class="text-4xl font-bold text-white glow" style="font-family:'Bebas Neue';">24H</div>
+      <div class="text-sm mt-1" style="color: rgba(200,240,255,0.55);">Same Day Response</div>
+    </div>
+    <div class="text-center">
+      <div class="text-4xl font-bold text-white glow" style="font-family:'Bebas Neue';">100%</div>
+      <div class="text-sm mt-1" style="color: rgba(200,240,255,0.55);">Satisfaction Rate</div>
+    </div>
+    <div class="text-center">
+      <div class="text-4xl font-bold text-white glow" style="font-family:'Bebas Neue';">5★</div>
+      <div class="text-sm mt-1" style="color: rgba(200,240,255,0.55);">Customer Rating</div>
+    </div>
+  </div>
+</section>
+<div class="frost-divider"></div>
+
+<!-- SERVICES -->
+<section id="services" class="py-24 px-5 relative overflow-hidden">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 fade-up">
+      <span class="same-day-badge text-white mb-4 inline-block">Our Expertise</span>
+      <h2 class="text-6xl md:text-7xl text-white mt-4 glow">WHAT WE<br><span style="color:var(--flash);">FIX</span></h2>
+      <p class="mt-4 text-lg max-w-xl mx-auto" style="color:rgba(200,240,255,0.6);">From household fridges to industrial cold rooms — if it cools, heats, or drains, we handle it.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Fridge Repair -->
+      <div class="service-card p-7 fade-up stagger-1">
+        <div class="text-4xl mb-4">🧊</div>
+        <h3 class="text-2xl text-white mb-2" style="font-family:'Barlow Condensed'; font-weight:700; letter-spacing:0.03em;">FRIDGE REPAIR</h3>
+        <p style="color:rgba(200,240,255,0.65);" class="text-sm leading-relaxed">Not cooling? Making noise? We diagnose and repair all fridge brands and models fast.</p>
+        <button onclick="openModal()" class="mt-5 text-xs font-semibold tracking-widest uppercase cursor-pointer bg-transparent border-0 flex items-center gap-2" style="color:var(--flash);">
+          Get a Quote <span>→</span>
+        </button>
+      </div>
+
+      <!-- Regas -->
+      <div class="service-card p-7 fade-up stagger-2">
+        <div class="text-4xl mb-4">💨</div>
+        <h3 class="text-2xl text-white mb-2" style="font-family:'Barlow Condensed'; font-weight:700; letter-spacing:0.03em;">GAS REGAS</h3>
+        <p style="color:rgba(200,240,255,0.65);" class="text-sm leading-relaxed">Low on refrigerant? We refill and regas fridges, freezers and cold rooms using the correct gas type.</p>
+        <button onclick="openModal()" class="mt-5 text-xs font-semibold tracking-widest uppercase cursor-pointer bg-transparent border-0 flex items-center gap-2" style="color:var(--flash);">
+          Get a Quote <span>→</span>
+        </button>
+      </div>
+
+      <!-- Cold Rooms -->
+      <div class="service-card p-7 fade-up stagger-3">
+        <div class="text-4xl mb-4">🏭</div>
+        <h3 class="text-2xl text-white mb-2" style="font-family:'Barlow Condensed'; font-weight:700; letter-spacing:0.03em;">COLD ROOMS</h3>
+        <p style="color:rgba(200,240,255,0.65);" class="text-sm leading-relaxed">Industrial and commercial cold room installation, repair, and maintenance. All sizes handled.</p>
+        <button onclick="openModal()" class="mt-5 text-xs font-semibold tracking-widest uppercase cursor-pointer bg-transparent border-0 flex items-center gap-2" style="color:var(--flash);">
+          Get a Quote <span>→</span>
+        </button>
+      </div>
+
+      <!-- Engine Thermostats -->
+      <div class="service-card p-7 fade-up stagger-4">
+        <div class="text-4xl mb-4">🌡️</div>
+        <h3 class="text-2xl text-white mb-2" style="font-family:'Barlow Condensed'; font-weight:700; letter-spacing:0.03em;">ENGINE THERMOSTATS</h3>
+        <p style="color:rgba(200,240,255,0.65);" class="text-sm leading-relaxed">Thermostat installation and replacement for appliances and vehicles. Precise, professional fitting.</p>
+        <button onclick="openModal()" class="mt-5 text-xs font-semibold tracking-widest uppercase cursor-pointer bg-transparent border-0 flex items-center gap-2" style="color:var(--flash);">
+          Get a Quote <span>→</span>
+        </button>
+      </div>
+
+      <!-- Dryers -->
+      <div class="service-card p-7 fade-up stagger-5">
+        <div class="text-4xl mb-4">🌀</div>
+        <h3 class="text-2xl text-white mb-2" style="font-family:'Barlow Condensed'; font-weight:700; letter-spacing:0.03em;">DRYER REPAIRS</h3>
+        <p style="color:rgba(200,240,255,0.65);" class="text-sm leading-relaxed">Tumble dryer not heating or spinning? We fix heating elements, belts, motors and more.</p>
+        <button onclick="openModal()" class="mt-5 text-xs font-semibold tracking-widest uppercase cursor-pointer bg-transparent border-0 flex items-center gap-2" style="color:var(--flash);">
+          Get a Quote <span>→</span>
+        </button>
+      </div>
+
+      <!-- Pipe Leaks -->
+      <div class="service-card p-7 fade-up stagger-6">
+        <div class="text-4xl mb-4">🔩</div>
+        <h3 class="text-2xl text-white mb-2" style="font-family:'Barlow Condensed'; font-weight:700; letter-spacing:0.03em;">PIPE LEAKS & BLOCKAGES</h3>
+        <p style="color:rgba(200,240,255,0.65);" class="text-sm leading-relaxed">Leaking or blocked drainage pipes? We locate and fix leaks and clear blockages quickly.</p>
+        <button onclick="openModal()" class="mt-5 text-xs font-semibold tracking-widest uppercase cursor-pointer bg-transparent border-0 flex items-center gap-2" style="color:var(--flash);">
+          Get a Quote <span>→</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<div class="frost-divider"></div>
+<section id="why-us" class="py-24 px-5" style="background: linear-gradient(180deg, rgba(14,165,233,0.05) 0%, transparent 100%);">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 fade-up">
+      <h2 class="text-6xl text-white glow">WHY CHOOSE <span style="color:var(--flash);">US?</span></h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="text-center fade-up stagger-1">
+        <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl mb-4" style="background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(14,165,233,0.05)); border: 1px solid rgba(0,229,255,0.2);">⚡</div>
+        <h3 class="text-xl text-white mb-2 heading-alt font-bold tracking-wide">SAME DAY</h3>
+        <p class="text-sm" style="color:rgba(200,240,255,0.6);">We respond fast. Most jobs completed the same day you call — no long waits, no food spoilage.</p>
+      </div>
+      <div class="text-center fade-up stagger-2">
+        <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl mb-4" style="background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(14,165,233,0.05)); border: 1px solid rgba(0,229,255,0.2);">🛡️</div>
+        <h3 class="text-xl text-white mb-2 heading-alt font-bold tracking-wide">TRUSTED EXPERTS</h3>
+        <p class="text-sm" style="color:rgba(200,240,255,0.6);">Qualified, experienced technicians who get the job right the first time — every time.</p>
+      </div>
+      <div class="text-center fade-up stagger-3">
+        <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl mb-4" style="background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(14,165,233,0.05)); border: 1px solid rgba(0,229,255,0.2);">💬</div>
+        <h3 class="text-xl text-white mb-2 heading-alt font-bold tracking-wide">WHATSAPP SUPPORT</h3>
+        <p class="text-sm" style="color:rgba(200,240,255,0.6);">Message us anytime. We're available on WhatsApp for quotes, bookings and follow-ups — quick and easy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<div class="frost-divider"></div>
+<section class="py-20 px-5">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-5xl text-white text-center mb-12 fade-up glow">WHAT CUSTOMERS <span style="color:var(--flash);">SAY</span></h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="review-card p-6 fade-up stagger-1">
+        <div class="flex gap-1 mb-3">⭐⭐⭐⭐⭐</div>
+        <p class="text-sm leading-relaxed mb-4" style="color:rgba(200,240,255,0.75);">"Fixed my fridge within hours of calling. Super professional and the price was very fair. Highly recommend!"</p>
+        <div class="text-sm font-semibold text-white">— Thandi M.</div>
+      </div>
+      <div class="review-card p-6 fade-up stagger-2">
+        <div class="flex gap-1 mb-3">⭐⭐⭐⭐⭐</div>
+        <p class="text-sm leading-relaxed mb-4" style="color:rgba(200,240,255,0.75);">"Cold room at my shop broke down on a Friday. They came same day and had it running before closing time. Lifesavers!"</p>
+        <div class="text-sm font-semibold text-white">— Sipho K.</div>
+      </div>
+      <div class="review-card p-6 fade-up stagger-3">
+        <div class="flex gap-1 mb-3">⭐⭐⭐⭐⭐</div>
+        <p class="text-sm leading-relaxed mb-4" style="color:rgba(200,240,255,0.75);">"Regassed my fridge quickly. WhatsApp made it so easy to get a quote and book. Will definitely use again."</p>
+        <div class="text-sm font-semibold text-white">— Nomsa D.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="frost-divider"></div>
+<section id="contact" class="py-24 px-5" style="background: linear-gradient(180deg, transparent, rgba(14,165,233,0.06));">
+  <div class="max-w-4xl mx-auto text-center fade-up">
+    <h2 class="text-6xl md:text-7xl text-white glow mb-6">READY TO <span style="color:var(--flash);">FIX IT?</span></h2>
+    <p class="text-lg mb-10" style="color:rgba(200,240,255,0.65);">Don't let a broken fridge ruin your day. Reach us instantly via WhatsApp or give us a call — we're ready.</p>
+
+    <div class="flex flex-col sm:flex-row gap-5 justify-center mb-12">
+      <button onclick="openModal()" class="btn-wa text-white font-semibold px-10 py-5 text-lg flex items-center gap-3 justify-center cursor-pointer border-0">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Chat on WhatsApp
+      </button>
+      <a href="tel:0633274413" class="btn-call text-white font-semibold px-10 py-5 text-lg flex items-center gap-3 justify-center no-underline" style="border-radius:50px;">
+        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        063 327 4413
+      </a>
+    </div>
+
+    <!-- Contact info chips -->
+    <div class="flex flex-wrap justify-center gap-4">
+      <div class="stat-box px-5 py-3 flex items-center gap-2">
+        <span style="color:var(--flash);">📍</span>
+        <span class="text-sm" style="color:rgba(200,240,255,0.7);">We Come to You</span>
+      </div>
+      <div class="stat-box px-5 py-3 flex items-center gap-2">
+        <span style="color:var(--flash);">⏰</span>
+        <span class="text-sm" style="color:rgba(200,240,255,0.7);">Mon–Sat: 7am – 7pm</span>
+      </div>
+      <div class="stat-box px-5 py-3 flex items-center gap-2">
+        <span style="color:var(--flash);">📱</span>
+        <span class="text-sm" style="color:rgba(200,240,255,0.7);">063 327 4413</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="frost-divider"></div>
+<footer class="py-8 px-5 text-center" style="background: rgba(5,12,22,0.9);">
+  <div class="flex items-center justify-center gap-3 mb-3">
+    <span class="text-2xl">❄️</span>
+    <span class="heading-alt font-bold text-white tracking-wide">FROSTFIX PRO</span>
+  </div>
+  <p class="text-xs" style="color:rgba(200,240,255,0.35);">Fridge Repair & Regas Specialists · 063 327 4413 · Same Day Service</p>
+  <p class="text-xs mt-2" style="color:rgba(200,240,255,0.2);">© 2025 FrostFix Pro. All rights reserved.</p>
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<div class="wa-float" onclick="openModal()" title="Chat on WhatsApp">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</div>
+
+<!-- WHATSAPP ACTIVATION MODAL -->
+<div class="modal-backdrop" id="waModal" onclick="handleBackdropClick(event)">
+  <div class="modal-box" id="modalBox">
+    <!-- Close -->
+    <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full cursor-pointer border-0 text-lg" style="background:rgba(255,255,255,0.08); color:rgba(200,240,255,0.6);">✕</button>
+
+    <!-- Header -->
+    <div class="flex items-center gap-4 mb-6">
+      <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0" style="background: linear-gradient(135deg, #25d366, #128c7e);">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </div>
+      <div>
+        <h3 class="text-2xl text-white" style="font-family:'Barlow Condensed'; font-weight:800; letter-spacing:0.04em;">ACTIVATE YOUR WEB ACCOUNT</h3>
+        <p class="text-sm" style="color:rgba(200,240,255,0.55);">FrostFix Pro — WhatsApp Business</p>
+      </div>
+    </div>
+
+    <!-- Value prop -->
+    <div class="rounded-xl p-4 mb-6" style="background: rgba(37,211,102,0.08); border: 1px solid rgba(37,211,102,0.2);">
+      <p class="text-sm leading-relaxed" style="color:rgba(200,240,255,0.85);">
+        🔓 <strong class="text-white">Activate your web account</strong> for a <span style="color:#4ade80; font-weight:700;">very small once-off fee</span> and let your customers contact and connect with you at any time — directly on WhatsApp Business.
+      </p>
+    </div>
+
+    <!-- Features -->
+    <div class="space-y-3 mb-7">
+      <div class="flex items-center gap-3">
+        <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs" style="background:#25d366;">✓</div>
+        <span class="text-sm" style="color:rgba(200,240,255,0.8);">Instant WhatsApp messaging — no waiting</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs" style="background:#25d366;">✓</div>
+        <span class="text-sm" style="color:rgba(200,240,255,0.8);">Get quotes, book repairs and follow up easily</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs" style="background:#25d366;">✓</div>
+        <span class="text-sm" style="color:rgba(200,240,255,0.8);">Customers reach you directly, anytime</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs" style="background:#25d366;">✓</div>
+        <span class="text-sm" style="color:rgba(200,240,255,0.8);">Professional WhatsApp Business profile</span>
+      </div>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="flex flex-col gap-3">
+      <a href="https://wa.me/27633274413?text=Hi%20FrostFix%20Pro!%20I%20need%20a%20repair%20quote%20please." target="_blank" class="btn-wa text-white font-semibold py-4 text-base flex items-center justify-center gap-3 no-underline w-full text-center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Open WhatsApp — Activate Now
+      </a>
+      <a href="tel:0633274413" class="btn-call text-white font-semibold py-4 text-base flex items-center justify-center gap-3 no-underline w-full" style="border-radius:50px;">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        Call 063 327 4413
+      </a>
+    </div>
+
+    <p class="text-center text-xs mt-4" style="color:rgba(200,240,255,0.3);">Tap outside to close</p>
+  </div>
+</div>
+
+<script>
+  // Modal
+  function openModal() {
+    document.getElementById('waModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('waModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function handleBackdropClick(e) {
+    if (e.target === document.getElementById('waModal')) closeModal();
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) { el.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Snowflakes
+  const container = document.getElementById('snowflakes');
+  const symbols = ['❄', '❅', '❆', '·', '•'];
+  function createFlake() {
+    const flake = document.createElement('span');
+    flake.className = 'flake';
+    flake.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    flake.style.left = Math.random() * 100 + 'vw';
+    flake.style.fontSize = (12 + Math.random() * 16) + 'px';
+    const dur = 8 + Math.random() * 12;
+    flake.style.animationDuration = dur + 's';
+    flake.style.animationDelay = Math.random() * 5 + 's';
+    container.appendChild(flake);
+    setTimeout(() => flake.remove(), (dur + 5) * 1000);
+  }
+  for (let i = 0; i < 12; i++) setTimeout(createFlake, i * 600);
+  setInterval(createFlake, 1800);
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
